@@ -18,13 +18,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function checkAccess() {
         const userCode = accessInput.value.trim().toUpperCase();
         if (userCode === CORRECT_CODE) {
-            // 轉場動畫
             lockScreen.style.opacity = '0';
             lockScreen.style.transition = 'opacity 0.8s ease-in-out';
-            
             setTimeout(() => {
                 lockScreen.classList.add('hidden');
-                // 確保 appContainer 存在才移除 hidden
                 if(appContainer) {
                     appContainer.classList.remove('hidden');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -38,50 +35,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    if (enterBtn) {
-        enterBtn.addEventListener('click', checkAccess);
-    }
-    if (accessInput) {
-        accessInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') checkAccess();
-        });
-    }
+    if (enterBtn) enterBtn.addEventListener('click', checkAccess);
+    if (accessInput) accessInput.addEventListener('keypress', function(e) { if (e.key === 'Enter') checkAccess(); });
 
     // --- 3. 圖片上傳與分析邏輯 ---
     if (uploadZone && imageInput) {
-        uploadZone.addEventListener('click', function() {
-            imageInput.click();
-        });
-
-        imageInput.addEventListener('change', function(e) {
-            if(e.target.files && e.target.files[0]) {
-                startAnalysis(e.target.files[0]);
-            }
-        });
+        uploadZone.addEventListener('click', function() { imageInput.click(); });
+        imageInput.addEventListener('change', function(e) { if(e.target.files && e.target.files[0]) startAnalysis(e.target.files[0]); });
     }
 
-    // Loading 動畫文字序列
-    const loadingSequence = [
-        "CALCULATING SURFACE GEOMETRY...",
-        "SAMPLING SKIN TEXTURE...",
-        "ANALYZING LIGHT PATH...",
-        "MATCHING FACADE ARCHETYPE...",
-        "GENERATING ISSUE #2026..."
-    ];
+    const loadingSequence = ["CALCULATING SURFACE GEOMETRY...", "SAMPLING SKIN TEXTURE...", "ANALYZING LIGHT PATH...", "MATCHING FACADE ARCHETYPE...", "GENERATING ISSUE #2026..."];
 
     function startAnalysis(file) {
         if(uploadZone) uploadZone.classList.add('hidden');
         if(loader) loader.classList.remove('hidden');
-        
-        // 啟動 Loading 文字動畫
         let step = 0;
         if(loadingText) loadingText.innerText = loadingSequence[0];
-        
         const loadingInterval = setInterval(() => {
             step++;
-            if (loadingText && step < loadingSequence.length) {
-                loadingText.innerText = loadingSequence[step];
-            }
+            if (loadingText && step < loadingSequence.length) loadingText.innerText = loadingSequence[step];
         }, 600);
 
         const reader = new FileReader();
@@ -89,16 +61,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const img = new Image();
             img.onload = function() {
                 const results = analyzeImage(img);
-                
-                // 模擬運算時間 (3秒)
                 setTimeout(() => {
                     clearInterval(loadingInterval);
                     renderResult(results, event.target.result);
-                    
                     if(loader) loader.classList.add('hidden');
                     if(resultSection) {
                         resultSection.classList.remove('hidden');
-                        // 觸發進場動畫
                         setTimeout(() => {
                             resultSection.classList.add('animate-in');
                             const layer = document.querySelector('.image-layer');
@@ -116,40 +84,30 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- 4. 12原型核心演算法 ---
     function analyzeImage(img) {
         const canvas = document.getElementById('canvas');
-        if(!canvas) return { isWarm: true, lightnessLevel: "MED", isHard: false }; // Fallback
+        if(!canvas) return { isWarm: true, lightnessLevel: "MED", isHard: false };
 
         const ctx = canvas.getContext('2d');
-        
         const processSize = 200;
-        canvas.width = processSize; 
-        canvas.height = processSize;
+        canvas.width = processSize; canvas.height = processSize;
         const ratio = Math.max(processSize / img.width, processSize / img.height);
         const centerShift_x = (processSize - img.width * ratio) / 2;
         const centerShift_y = (processSize - img.height * ratio) / 2;
         ctx.drawImage(img, 0, 0, img.width, img.height, centerShift_x, centerShift_y, img.width * ratio, img.height * ratio);
         
-        const startX = processSize * 0.25;
-        const endX = processSize * 0.75;
-        const startY = processSize * 0.20;
-        const endY = processSize * 0.80;
-
+        const startX = processSize * 0.25; const endX = processSize * 0.75;
+        const startY = processSize * 0.20; const endY = processSize * 0.80;
         const imageData = ctx.getImageData(startX, startY, endX - startX, endY - startY);
         const data = imageData.data;
         
         let rSum = 0, gSum = 0, bSum = 0;
         let skinPixelCount = 0;
         let brightnessSum = 0;
-        let maxBrightness = 0;
-        let minBrightness = 255;
+        let maxBrightness = 0; let minBrightness = 255;
 
         for (let i = 0; i < data.length; i += 4) {
-            const r = data[i];
-            const g = data[i+1];
-            const b = data[i+2];
+            const r = data[i]; const g = data[i+1]; const b = data[i+2];
             const brightness = (r + g + b) / 3;
-
             const isLikelySkin = (r > b) && (brightness > 30 && brightness < 245);
-
             if (isLikelySkin) {
                 rSum += r; gSum += g; bSum += b;
                 brightnessSum += brightness;
@@ -160,20 +118,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         if (skinPixelCount < 50) { 
-            skinPixelCount = 1;
-            rSum = 180; gSum = 170; bSum = 160; brightnessSum = 170;
-            maxBrightness = 180; minBrightness = 160;
+            skinPixelCount = 1; rSum = 180; gSum = 170; bSum = 160; brightnessSum = 170; maxBrightness = 180; minBrightness = 160;
         }
 
-        const rAvg = rSum / skinPixelCount;
-        const bAvg = bSum / skinPixelCount;
+        const rAvg = rSum / skinPixelCount; const bAvg = bSum / skinPixelCount;
         const isWarm = rAvg > (bAvg * 1.1); 
-
         const avgBrightness = brightnessSum / skinPixelCount;
         let lightnessLevel = "MED";
-        if (avgBrightness > 170) lightnessLevel = "LIGHT"; 
-        else if (avgBrightness < 100) lightnessLevel = "DARK";
-
+        if (avgBrightness > 170) lightnessLevel = "LIGHT"; else if (avgBrightness < 100) lightnessLevel = "DARK";
         const localContrast = (maxBrightness - minBrightness) / maxBrightness;
         const isHard = localContrast > 0.35;
 
@@ -182,14 +134,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function renderResult(data, imgSrc) {
         const bgLayer = document.getElementById('preview-bg');
-        if(bgLayer) {
-            bgLayer.classList.remove('developed');
-            bgLayer.style.backgroundImage = `url(${imgSrc})`;
-        }
+        if(bgLayer) { bgLayer.classList.remove('developed'); bgLayer.style.backgroundImage = `url(${imgSrc})`; }
         
         let archetypes = {};
-        
-        // 原型定義 (保持不變)
         archetypes["WARM_LIGHT_SOFT"] = { en: "CREAM TRAVERTINE", zh: "米黃洞石", mat: "Travertine / Cashmere<span class='zh-sub'>洞石 / 羊絨</span>", light: "Diffused Warm 2700K<span class='zh-sub'>2700K 柔和漫射光</span>", desc: "你的氣質如同羅馬古建築中的米黃洞石，充滿古典與優雅的韻味。你的立面不需要過度修飾，柔和的漫射暖光最能襯托你細膩、溫潤的層次感。", cols: ['#F5F5DC', '#E6D8AD', '#C1B68F'] };
         archetypes["WARM_LIGHT_HARD"] = { en: "CHAMPAGNE MESH", zh: "香檳金屬網", mat: "Champagne Gold / Silk<span class='zh-sub'>香檳金 / 絲綢</span>", light: "Shimmering Light<span class='zh-sub'>微光閃爍</span>", desc: "你擁有精緻且帶有透亮感的現代奢華特質。如同建築立面上的香檳色金屬網，在光線下閃爍著微光。你需要帶有光澤感的材質來呼應你的高貴氣息。", cols: ['#F7E7CE', '#D4AF37', '#FFF8E7'] };
         archetypes["WARM_MED_SOFT"] = { en: "RAW TIMBER", zh: "溫潤原木", mat: "Raw Wood / Linen<span class='zh-sub'>原木 / 亞麻</span>", light: "Natural Sunlight<span class='zh-sub'>自然日照</span>", desc: "你的視覺基調如同未經大漆的原木，自帶一種有機、親和且療癒的敘事感。任何人工的過度拋光都會破壞你與生俱來的自然美，保持本真就是最高級。", cols: ['#C19A6B', '#8B5A2B', '#EADDCA'] };
@@ -204,9 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
         archetypes["COOL_DARK_HARD"] = { en: "OBSIDIAN", zh: "黑曜岩", mat: "Black Glass / Leather<span class='zh-sub'>黑玻 / 皮革</span>", light: "High Contrast Spot<span class='zh-sub'>高反差點光</span>", desc: "你是黑夜中的王者，如同黑曜岩般銳利、漆黑且閃耀。極致的對比度是你最好的武器。大膽嘗試全黑造型與強烈的硬光，展現令人屏息的強大氣場。", cols: ['#000000', '#1C1C1C', '#2C3E50'] };
 
         const tempKey = data.isWarm ? "WARM" : "COOL";
-        const lightKey = data.lightnessLevel; 
-        const hardKey = data.isHard ? "HARD" : "SOFT";
-        
+        const lightKey = data.lightnessLevel; const hardKey = data.isHard ? "HARD" : "SOFT";
         const resultKey = `${tempKey}_${lightKey}_${hardKey}`;
         const result = archetypes[resultKey] || archetypes["WARM_MED_SOFT"]; 
 
@@ -217,45 +162,65 @@ document.addEventListener('DOMContentLoaded', function() {
         if(document.getElementById('analysis-text')) document.getElementById('analysis-text').innerText = result.desc;
         
         const chips = document.getElementById('color-chips');
-        if(chips) {
-            chips.innerHTML = '';
-            result.cols.forEach(c => {
-                let div = document.createElement('div');
-                div.className = 'chip';
-                div.style.backgroundColor = c;
-                chips.appendChild(div);
-            });
-        }
+        if(chips) { chips.innerHTML = ''; result.cols.forEach(c => { let div = document.createElement('div'); div.className = 'chip'; div.style.backgroundColor = c; chips.appendChild(div); }); }
     }
 
-    // --- 5. 截圖下載功能 ---
+    // --- 5. [關鍵修正] 匯出前移除特效以確保清晰 ---
     if(downloadBtn) {
         downloadBtn.addEventListener('click', function() {
             const card = document.getElementById('capture-area');
             const btn = this;
             const originalText = btn.innerText;
+            const noise = document.querySelector('.noise-overlay');
+            const imgLayer = document.querySelector('.image-layer');
 
             btn.innerText = "正在封裝...";
 
+            // 1. 暫時隱藏會造成霧化/模糊的特效
+            if(noise) noise.style.display = 'none';
+            if(imgLayer) {
+                // 暫存目前的 filter
+                imgLayer.dataset.originalFilter = getComputedStyle(imgLayer).filter;
+                // 強制移除 filter，因為 html2canvas 渲染 filter 效果很差
+                imgLayer.style.filter = 'none';
+                imgLayer.style.opacity = '1';
+            }
+
+            // 2. 暫時移除卡片的 3D 變形，避免匯出時變形
+            const originalTransform = card.style.transform;
+            card.style.transform = 'none';
+            card.style.boxShadow = 'none';
+
             html2canvas(card, {
-                scale: 3, 
+                scale: 3, // 高清倍率
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: "#fff",
+                width: 375, // 鎖定寬度
+                height: 667 // 鎖定高度
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = 'EDEN_FACADE_REPORT_2026.png';
                 link.href = canvas.toDataURL("image/png");
                 link.click();
                 
-                // 按鈕回饋
                 btn.innerText = "已保存至相簿 請發佈限動";
-                setTimeout(() => {
-                    btn.innerText = originalText;
-                }, 3000);
+                setTimeout(() => { btn.innerText = originalText; }, 3000);
+
+                // 3. 恢復所有特效
+                if(noise) noise.style.display = 'block';
+                if(imgLayer) imgLayer.style.filter = '';
+                card.style.transform = '';
+                card.style.boxShadow = '';
+
             }).catch(err => {
                 console.error(err);
                 btn.innerText = "儲存失敗，請重試";
+                // 發生錯誤也要恢復
+                if(noise) noise.style.display = 'block';
+                if(imgLayer) imgLayer.style.filter = '';
+                card.style.transform = '';
+                card.style.boxShadow = '';
             });
         });
     }
