@@ -61,45 +61,87 @@ function startAnalysis(file) {
     reader.readAsDataURL(file);
 }
 
-// --- 12 ARCHETYPES ALGORITHM ---
+// --- 12 ARCHETYPES ALGORITHM (SMART SKIN FILTERING) ---
 function analyzeImage(img) {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = 100; canvas.height = 100;
-    ctx.drawImage(img, 0, 0, 100, 100);
     
-    // 取樣：臉部核心區域
-    const imageData = ctx.getImageData(30, 30, 40, 40);
+    // 將圖片縮小到 200x200 進行快速分析
+    const processSize = 200;
+    canvas.width = processSize; 
+    canvas.height = processSize;
+    // 繪製時保持比例居中裁剪 (object-fit: cover 的效果)
+    const ratio = Math.max(processSize / img.width, processSize / img.height);
+    const centerShift_x = (processSize - img.width * ratio) / 2;
+    const centerShift_y = (processSize - img.height * ratio) / 2;
+    ctx.drawImage(img, 0, 0, img.width, img.height, centerShift_x, centerShift_y, img.width * ratio, img.height * ratio);
+    
+    // 定義掃描區域：中間 50% 寬，中間 60% 高
+    // 這涵蓋了大部分置中肖像的臉部區域，同時避開邊緣背景
+    const startX = processSize * 0.25;
+    const endX = processSize * 0.75;
+    const startY = processSize * 0.20;
+    const endY = processSize * 0.80;
+
+    const imageData = ctx.getImageData(startX, startY, endX - startX, endY - startY);
     const data = imageData.data;
-    let r = 0, g = 0, b = 0;
-    let brightnessSum = 0;
     
+    let rSum = 0, gSum = 0, bSum = 0;
+    let skinPixelCount = 0;
+    let brightnessSum = 0;
+    let maxBrightness = 0;
+    let minBrightness = 255;
+
     for (let i = 0; i < data.length; i += 4) {
-        r += data[i]; g += data[i+1]; b += data[i+2];
-        brightnessSum += (data[i] + data[i+1] + data[i+2]) / 3;
+        const r = data[i];
+        const g = data[i+1];
+        const b = data[i+2];
+        const brightness = (r + g + b) / 3;
+
+        // --- [關鍵修改] 智慧膚色過濾器 ---
+        // 1. 基礎膚色邏輯：紅色通道通常最強 (R > G 且 R > B)
+        // 2. 排除極端值：太暗 (<30, 頭髮/陰影) 或太亮 (>240, 背景/反光) 不算
+        // 這裡加了一點寬容度 (g + 5, b + 5) 避免過濾掉偏冷或偏黃的膚色
+        const isLikelySkin = (r > g + 2) && (r > b + 2) && (brightness > 30 && brightness < 240);
+
+        if (isLikelySkin) {
+            rSum += r;
+            gSum += g;
+            bSum += b;
+            brightnessSum += brightness;
+            skinPixelCount++;
+            
+            if (brightness > maxBrightness) maxBrightness = brightness;
+            if (brightness < minBrightness) minBrightness = brightness;
+        }
     }
     
-    const count = data.length / 4;
-    r = r / count; g = g / count; b = b / count;
+    // 如果沒抓到膚色 (例如照片太暗或非人像)，就用一個預設值避免報錯，並給出中間值
+    if (skinPixelCount < 100) { 
+        skinPixelCount = 1;
+        rSum = 180; gSum = 160; bSum = 150; brightnessSum = 163;
+        maxBrightness = 180; minBrightness = 140;
+    }
+
+    const rAvg = rSum / skinPixelCount;
+    const gAvg = gSum / skinPixelCount;
+    const bAvg = bSum / skinPixelCount;
     
     // 1. 判斷冷暖 (Temp)
-    // 簡單算法：紅 > 藍*1.05 為暖 (因膚色多偏暖，稍微嚴格一點)
-    const isWarm = r > (b * 1.05);
+    // 比較紅藍比例。權重 1.15 是經驗值，用於平衡亞洲人普遍偏暖的膚色
+    const isWarm = rAvg > (bAvg * 1.15); 
 
-    // 2. 判斷明度 (Lightness) - 0~255
-    const avgBrightness = brightnessSum / count;
+    // 2. 判斷明度 (Lightness)
+    const avgBrightness = brightnessSum / skinPixelCount;
     let lightnessLevel = "MED";
-    if (avgBrightness > 160) lightnessLevel = "LIGHT"; // 淺色
-    else if (avgBrightness < 90) lightnessLevel = "DARK"; // 深色
+    if (avgBrightness > 165) lightnessLevel = "LIGHT"; 
+    else if (avgBrightness < 110) lightnessLevel = "DARK";
 
-    // 3. 判斷對比/質地 (Contrast/Texture)
-    // 利用最大值與最小值的差異比率模擬
-    const maxVal = Math.max(r, g, b);
-    const minVal = Math.min(r, g, b);
-    const contrastRatio = (maxVal - minVal) / maxVal;
-    
-    // 0.2 是一個經驗閾值，高於此視為銳利/高對比，低於此視為柔和/啞光
-    const isHard = contrastRatio > 0.22;
+    // 3. 判斷質地/對比 (Texture/Contrast)
+    // 計算篩選出的膚色區域內的對比度
+    const localContrast = (maxBrightness - minBrightness) / maxBrightness;
+    // 閾值 0.32：高於此代表五官立體度高(硬)，低於此代表較平滑柔和(軟)
+    const isHard = localContrast > 0.32;
 
     return { isWarm, lightnessLevel, isHard };
 }
@@ -110,9 +152,6 @@ function renderResult(data, imgSrc) {
     
     let archetypes = {};
 
-    // --- 定義 12 原型資料庫 ---
-    // Key 格式: WARM/COOL + LIGHT/MED/DARK + SOFT/HARD
-    
     // 1. WARM GROUP
     archetypes["WARM_LIGHT_SOFT"] = {
         en: "CREAM TRAVERTINE", zh: "米黃洞石",
@@ -189,15 +228,13 @@ function renderResult(data, imgSrc) {
         cols: ['#000000', '#1C1C1C', '#2C3E50']
     };
 
-    // --- 匹配邏輯 ---
     const tempKey = data.isWarm ? "WARM" : "COOL";
-    const lightKey = data.lightnessLevel; // LIGHT, MED, DARK
+    const lightKey = data.lightnessLevel; 
     const hardKey = data.isHard ? "HARD" : "SOFT";
     
     const resultKey = `${tempKey}_${lightKey}_${hardKey}`;
-    const result = archetypes[resultKey] || archetypes["WARM_MED_SOFT"]; // Fallback
+    const result = archetypes[resultKey] || archetypes["WARM_MED_SOFT"]; 
 
-    // 注入資料
     document.getElementById('material-type-en').innerText = result.en;
     document.getElementById('material-type-zh').innerText = result.zh;
     document.getElementById('lighting-req').innerText = result.light;
