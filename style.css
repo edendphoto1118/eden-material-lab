@@ -63,7 +63,7 @@ input[type="file"] { display: none; }
     position: relative;
     display: flex;
     flex-direction: column;
-    /* 讓高度自然撐開 */
+    /* 這裡只設定最小高度，確保內容多時可以延伸 */
     min-height: 700px; 
 }
 
@@ -72,7 +72,7 @@ input[type="file"] { display: none; }
 .cover-image-container { position: relative; width: 100%; height: 450px; overflow: hidden; }
 .cover-image-container img {
     width: 100%; height: 100%; object-fit: cover;
-    /* [修改處] 移除 grayscale，保留色彩，稍微增加對比度提升質感 */
+    /* [重要] 統一使用全彩，僅微調對比增加質感，移除所有黑白設定 */
     filter: contrast(1.05) saturate(1.05);
 }
 
