@@ -4,37 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EDEN MATERIAL LAB</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="container">
+    <div id="lock-screen" class="lock-screen">
+        <div class="lock-content">
+            <h1 class="brand-title">EDEN</h1>
+            <p class="brand-subtitle">MATERIAL & LIGHT ANALYSIS</p>
+            
+            <div class="input-group">
+                <input type="text" id="access-code" placeholder="ENTER ACCESS CODE" autocomplete="off">
+                <button id="enter-btn" class="primary-btn">ENTER</button>
+            </div>
+            
+            <p id="error-msg" class="error-msg"></p>
+
+            <div class="lock-footer">
+                <p>NO ACCESS CODE?</p>
+                <a href="https://www.instagram.com/eden_d_photo/" target="_blank" class="text-link">DM "EDEN" ON INSTAGRAM</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-container" class="container hidden">
         <header class="header">
-            <div class="brand">EDEN // MATERIAL LAB</div>
-            <div class="status">SYS: READY</div>
+            <div class="brand">EDEN // LAB</div>
+            <div class="status">ID: AUTHENTICATED</div>
         </header>
 
         <section id="upload-zone" class="upload-zone">
             <div class="dashed-border">
                 <input type="file" id="imageInput" accept="image/*">
-                <p class="instruction">DRAG IMAGE OR CLICK TO IMPORT</p>
-                <p class="sub-instruction">Source: Natural Light (Recommeded)</p>
+                <p class="instruction">UPLOAD PORTRAIT</p>
+                <p class="sub-instruction">Natural Light Only</p>
             </div>
         </section>
 
         <div id="loader" class="loader hidden">
             <div class="line-scan"></div>
-            <p>ANALYZING SURFACE TEXTURE...</p>
-            <p id="calc-text">R:0 G:0 B:0</p>
+            <p class="blink">CALCULATING TEXTURE...</p>
         </div>
 
         <section id="result-section" class="result-section hidden">
             
             <div class="material-card" id="capture-area">
                 <div class="card-header">
-                    <span>PROJECT: VISUAL_ID</span>
-                    <span>DATE: 2025.Q2</span>
+                    <span>ARCHITECTURAL ANALYSIS</span>
+                    <span>2025 // EDEN</span>
                 </div>
                 
                 <div class="card-body">
@@ -45,41 +63,42 @@
                     
                     <div class="data-panel">
                         <div class="data-row">
-                            <span class="label">MATERIAL TYPE</span>
-                            <h2 id="material-type" class="highlight">ANALYZING...</h2>
+                            <span class="label">MATERIAL CLASS</span>
+                            <h2 id="material-type" class="serif-title">ANALYZING...</h2>
                         </div>
-                        <div class="data-row">
-                            <span class="label">LIGHTING REQ.</span>
-                            <span id="lighting-req">Calculating...</span>
-                        </div>
-                        <div class="data-row">
-                            <span class="label">TEXTURE</span>
-                            <span id="texture-rec">Calculating...</span>
+                        <div class="split-row">
+                            <div class="data-col">
+                                <span class="label">LIGHT</span>
+                                <span id="lighting-req">...</span>
+                            </div>
+                            <div class="data-col">
+                                <span class="label">TEXTURE</span>
+                                <span id="texture-rec">...</span>
+                            </div>
                         </div>
                         
                         <div class="palette">
-                            <span class="label">PALETTE_RGB:</span>
+                            <span class="label">PALETTE</span>
                             <div class="color-chips" id="color-chips"></div>
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="card-footer">
-                    <div class="barcode">||| |||| | ||||| EDEN LAB CERTIFIED</div>
+                    <div class="signature">Eden.D Certified</div>
                 </div>
             </div>
 
             <div class="action-panel">
                 <p class="analysis-summary" id="analysis-text">...</p>
-                <a href="https://www.instagram.com/" target="_blank" class="cta-btn">預約 EDEN 光影方案 (BOOK_SESSION)</a>
-                <button id="download-btn" class="secondary-btn">DOWNLOAD CERTIFICATE</button>
+                <a href="https://www.instagram.com/eden_d_photo/" target="_blank" class="cta-btn">BOOK SESSION (IG)</a>
+                <button id="download-btn" class="secondary-btn">DOWNLOAD RESULT</button>
             </div>
 
         </section>
     </div>
 
     <canvas id="canvas" style="display:none;"></canvas>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
