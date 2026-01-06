@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const CORRECT_CODE = "EDEN2026";
 
-    // --- 2. 門禁系統 ---
+    // --- 2. 門禁系統邏輯 ---
     function checkAccess() {
         const userCode = accessInput.value.trim().toUpperCase();
         if (userCode === CORRECT_CODE) {
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (enterBtn) enterBtn.addEventListener('click', checkAccess);
     if (accessInput) accessInput.addEventListener('keypress', function(e) { if (e.key === 'Enter') checkAccess(); });
 
-    // --- 3. 上傳與分析 ---
+    // --- 3. 圖片上傳與分析邏輯 ---
     if (uploadZone && imageInput) {
         uploadZone.addEventListener('click', function() { imageInput.click(); });
         imageInput.addEventListener('change', function(e) { if(e.target.files && e.target.files[0]) startAnalysis(e.target.files[0]); });
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
         reader.readAsDataURL(file);
     }
 
-    // --- 4. 演算法 ---
+    // --- 4. 12原型核心演算法 ---
     function analyzeImage(img) {
         const canvas = document.getElementById('canvas');
         if(!canvas) return { isWarm: true, lightnessLevel: "MED", isHard: false };
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
         archetypes["WARM_DARK_SOFT"] = { en: "CORTEN STEEL", zh: "耐候鋼", mat: "Rusted Steel / Wool<span class='zh-sub'>耐候鋼 / 羊毛</span>", light: "Ambient Warm<span class='zh-sub'>暖調氛圍光</span>", desc: "你的氣質帶有強烈的藝術性與時間感，如同建築大師喜愛的耐候鋼，隨著時間呈現出獨特的橘紅鏽色。你適合粗獷、有質感的材質，展現不隨波逐流的個性。", cols: ['#8B3A3A', '#654321', '#800000'] };
         archetypes["WARM_DARK_HARD"] = { en: "TITANIUM BRONZE", zh: "鈦古銅", mat: "Bronze / Velvet<span class='zh-sub'>鈦古銅 / 絲絨</span>", light: "Dramatic Hard Light<span class='zh-sub'>戲劇性硬光</span>", desc: "你對應的是頂級豪宅立面常用的鈦古銅。深邃、霸氣且極具權威感。你能夠駕馭極具戲劇性的光影，在黑暗中閃耀著沈穩的金屬光澤，氣場強大。", cols: ['#CD7F32', '#4B3621', '#B87333'] };
         archetypes["COOL_LIGHT_SOFT"] = { en: "FROSTED GLASS", zh: "霧面玻璃", mat: "Frosted Glass / Chiffon<span class='zh-sub'>霧面玻璃 / 雪紡</span>", light: "Soft White 4000K<span class='zh-sub'>4000K 柔和白光</span>", desc: "你的氣質空靈、通透，宛如美術館的霧面玻璃立面，將光線柔化成朦朧的詩意。你適合極度輕盈、半透明的材質，展現一種不沾世俗的仙氣。", cols: ['#E0FFFF', '#F0F8FF', '#B0E0E6'] };
-        archetypes["COOL_LIGHT_HARD"] = { en: "CARRARA MARBLE", zh: "卡拉拉大理石", mat: "White Marble / Satin<span class='zh-sub'>大理石 /緞面</span>", light: "Crisp Daylight<span class='zh-sub'>清冽日光</span>", desc: "你如同義大利卡拉拉大理石，白底中帶有清晰冷冽的灰紋。高貴、冷豔且條理分明。你需要乾淨銳利的光線來勾勒你精緻的線條，展現菁英般的距離感。", cols: ['#F2F3F4', '#D3D3D3', '#708090'] };
+        archetypes["COOL_LIGHT_HARD"] = { en: "CARRARA MARBLE", zh: "卡拉拉大理石", mat: "White Marble / Satin<span class='zh-sub'>大理石 / 緞面</span>", light: "Crisp Daylight<span class='zh-sub'>清冽日光</span>", desc: "你如同義大利卡拉拉大理石，白底中帶有清晰冷冽的灰紋。高貴、冷豔且條理分明。你需要乾淨銳利的光線來勾勒你精緻的線條，展現菁英般的距離感。", cols: ['#F2F3F4', '#D3D3D3', '#708090'] };
         archetypes["COOL_MED_SOFT"] = { en: "FAIR-FACED CONCRETE", zh: "清水混凝土", mat: "Concrete / Cotton<span class='zh-sub'>清水模 / 純棉</span>", light: "Even Cool Light<span class='zh-sub'>勻淨冷光</span>", desc: "你的氣質極淨、克制，宛如安藤忠雄的清水模建築。摒棄一切多餘裝飾，追求本質的純粹。你適合極簡剪裁與低飽和度的灰階色調，展現哲學般的冷靜。", cols: ['#D3D3D3', '#A9A9A9', '#778899'] };
         archetypes["COOL_MED_HARD"] = { en: "ANODIZED ALUMINUM", zh: "陽極鋁", mat: "Aluminum / Synthetic<span class='zh-sub'>陽極鋁 / 機能布料</span>", light: "Tech Cool<span class='zh-sub'>科技冷光</span>", desc: "你帶有強烈的未來主義與科技感，如同現代建築的陽極處理鋁板。理性、平滑且精準。你適合帶有光澤的科技布料或金屬配飾，展現前衛的時尚態度。", cols: ['#C0C0C0', '#E5E4E2', '#848482'] };
         archetypes["COOL_DARK_SOFT"] = { en: "BLUE SLATE", zh: "深藍板岩", mat: "Slate / Denim<span class='zh-sub'>板岩 / 丹寧</span>", light: "Dim Cool<span class='zh-sub'>微光冷調</span>", desc: "你的氣質內斂而神秘，如同深海般的藍灰色板岩。表面看似平靜，實則蘊含深沉的力量。你適合深色、粗糙質感的材質，在低調中展現不凡的品味。", cols: ['#2F4F4F', '#483D8B', '#36454F'] };
@@ -165,56 +165,91 @@ document.addEventListener('DOMContentLoaded', function() {
         if(chips) { chips.innerHTML = ''; result.cols.forEach(c => { let div = document.createElement('div'); div.className = 'chip'; div.style.backgroundColor = c; chips.appendChild(div); }); }
     }
 
-    // --- 5. [重寫] 儲存功能：使用 onclone 技術解決霧化與變形 ---
+    // --- 5. [功能重寫] 儲存截圖邏輯 ---
     if(downloadBtn) {
         downloadBtn.addEventListener('click', function() {
             const card = document.getElementById('capture-area');
             const btn = this;
             const originalText = btn.innerText;
+            
+            // 抓取可能導致霧化的特效元素
+            const noise = document.querySelector('.noise-overlay');
+            const texture = document.querySelector('.texture-overlay');
+            const imgLayer = document.querySelector('.image-layer');
 
             btn.innerText = "正在封裝...";
 
+            // 【步驟一】 暫時關閉特效 (解決霧化問題的核心)
+            // 1. 隱藏雜點 (因為 mix-blend-mode: overlay 在截圖時會變灰霧)
+            if(noise) noise.style.display = 'none';
+            
+            // 2. 處理漸層層 (mix-blend-mode: multiply 在截圖時會變黑塊)
+            // 我們把混合模式關掉，改用普通的半透明黑來模擬
+            let originalTextureBlend = '';
+            if(texture) {
+                originalTextureBlend = texture.style.mixBlendMode;
+                texture.style.mixBlendMode = 'normal';
+                texture.style.opacity = '0.5'; // 用透明度模擬暗角
+            }
+
+            // 3. 移除照片濾鏡 (brightness/contrast 會導致截圖兩次運算而過曝)
+            let originalFilter = '';
+            if(imgLayer) {
+                originalFilter = imgLayer.style.filter;
+                imgLayer.style.filter = 'none'; 
+                imgLayer.style.opacity = '1';
+            }
+
+            // 4. 移除卡片 3D 變形 (確保截圖是正的)
+            const originalTransform = card.style.transform;
+            card.style.transform = 'none';
+            card.style.boxShadow = 'none';
+            card.style.margin = '0'; // 避免邊距導致偏移
+
+            // 【步驟二】 執行截圖
             html2canvas(card, {
-                scale: 3, // 高解析度
-                useCORS: true,
+                useCORS: true, // 允許跨域
                 allowTaint: true,
-                backgroundColor: "#fff",
-                // 使用 onclone 在截圖前「整容」
-                onclone: (documentClone) => {
-                    const clone = documentClone.getElementById('capture-area');
-                    
-                    // 1. 強制重置變形與邊距 (解決位移與模糊)
-                    clone.style.transform = 'none';
-                    clone.style.boxShadow = 'none';
-                    clone.style.margin = '0';
-
-                    // 2. 解決 "Texture Fog" (漸層變灰)
-                    // html2canvas 不支援 mix-blend-mode: multiply，必須改為透明度模擬
-                    const texture = clone.querySelector('.texture-overlay');
-                    if (texture) {
-                        texture.style.mixBlendMode = 'normal';
-                        // 用半透明黑色漸層模擬 multiply 效果
-                        texture.style.background = 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.6) 100%)'; 
-                    }
-
-                    // 3. 解決 "Noise Fog" (雜點變白霧)
-                    // SVG filter 截圖會變成白霧，必須在截圖時隱藏
-                    const noise = clone.querySelector('.noise-overlay');
-                    if (noise) {
-                        noise.style.display = 'none';
-                    }
-                }
+                backgroundColor: "#fff", // 強制白底
+                // 移除 scale: 3，改用預設設備像素比，避免強制放大導致的運算錯誤
+                scale: window.devicePixelRatio || 2, 
+                width: 375, // 鎖定寬度
+                height: 667 // 鎖定高度
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = 'EDEN_FACADE_REPORT_2026.png';
                 link.href = canvas.toDataURL("image/png");
                 link.click();
                 
-                btn.innerText = "已保存至相簿 請發佈限動";
+                // 【步驟三】 狀態回饋
+                btn.innerText = "已保存至相簿 SAVED";
                 setTimeout(() => { btn.innerText = originalText; }, 3000);
+
+                // 【步驟四】 恢復特效 (讓網頁變回原樣)
+                if(noise) noise.style.display = 'block';
+                if(texture) {
+                    texture.style.mixBlendMode = originalTextureBlend || '';
+                    texture.style.opacity = '';
+                }
+                if(imgLayer) imgLayer.style.filter = originalFilter;
+                card.style.transform = originalTransform;
+                card.style.boxShadow = '';
+                card.style.margin = '';
+
             }).catch(err => {
                 console.error("截圖失敗:", err);
                 btn.innerText = "儲存失敗，請重試";
+                
+                // 失敗也要恢復特效
+                if(noise) noise.style.display = 'block';
+                if(texture) {
+                    texture.style.mixBlendMode = originalTextureBlend || '';
+                    texture.style.opacity = '';
+                }
+                if(imgLayer) imgLayer.style.filter = originalFilter;
+                card.style.transform = originalTransform;
+                card.style.boxShadow = '';
+                card.style.margin = '';
             });
         });
     }
