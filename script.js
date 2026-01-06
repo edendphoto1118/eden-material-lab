@@ -123,7 +123,7 @@ function renderResult(data, imgSrc) {
     });
 }
 
-// --- 下載功能優化 ---
+// --- 下載功能優化 (Clone Method) ---
 document.getElementById('download-btn').addEventListener('click', function() {
     const card = document.getElementById('capture-area');
     const btn = this;
@@ -131,29 +131,43 @@ document.getElementById('download-btn').addEventListener('click', function() {
 
     btn.innerText = "正在封裝您的報告...";
 
-    // 1. [修正變形] 暫時強制設定一個固定的寬度和自動高度進行截圖
-    const originalWidth = card.style.width;
-    const originalHeight = card.style.height;
+    // 1. [Clone] 複製卡片，這樣我們可以在後台修改它的尺寸而不影響用戶看到的畫面
+    const clone = card.cloneNode(true);
     
-    // 設定為 800px 寬，確保生成的圖片是漂亮的直式比例
-    card.style.width = '800px'; 
-    card.style.height = 'auto'; 
+    // 2. [Style Clone] 強制設定為手機直式寬度 (420px)，解決寬螢幕導致變形的問題
+    clone.style.width = "420px"; 
+    clone.style.height = "auto";
+    clone.style.position = "fixed";
+    clone.style.top = "-9999px"; // 移到畫面外
+    clone.style.left = "-9999px";
+    clone.style.transform = "none";
+    
+    // 確保圖片在 Clone 中保持 Object-Fit
+    const img = clone.querySelector('img');
+    img.style.objectFit = "cover";
+    img.style.height = "100%";
 
-    html2canvas(card, {
-        scale: 2, // 高清輸出
+    document.body.appendChild(clone);
+
+    // 3. [Capture] 截圖並放大 4 倍 (420px * 4 = 1680px 寬度)，保證高清
+    html2canvas(clone, {
+        scale: 4, 
         useCORS: true,
         allowTaint: true,
-        scrollY: -window.scrollY, 
-        backgroundColor: "#fff" // 確保背景是白色
+        backgroundColor: "#fff",
+        logging: false
     }).then(canvas => {
         const link = document.createElement('a');
         link.download = 'EDEN_Material_Issue_2025.png';
-        link.href = canvas.toDataURL("image/png");
+        link.href = canvas.toDataURL("image/png", 1.0); // 最高品質
         link.click();
         
-        // 恢復原始狀態
+        // 清理
+        document.body.removeChild(clone);
         btn.innerText = originalText;
-        card.style.width = originalWidth; // 恢復原始寬度樣式
-        card.style.height = originalHeight; // 恢復原始高度樣式
+    }).catch(err => {
+        console.error(err);
+        btn.innerText = "下載失敗，請重試";
+        document.body.removeChild(clone);
     });
 });
