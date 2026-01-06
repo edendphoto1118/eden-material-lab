@@ -1,9 +1,10 @@
 :root {
     --bg-color: #f8f7f5;
     --text-primary: #1a1a1a;
-    --text-secondary: #666666;
-    --accent-color: #e0dcd6;
-    --font-serif-en: 'Playfair Display', serif;
+    --text-secondary: #555555;
+    --accent-color: #dcdcdc;
+    /* [修改] VOGUE 風格核心字體：Bodoni Moda */
+    --font-vogue: 'Bodoni Moda', serif; 
     --font-serif-zh: 'Noto Serif TC', serif;
     --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
@@ -11,7 +12,7 @@
 body {
     background-color: var(--bg-color);
     color: var(--text-primary);
-    font-family: var(--font-serif-zh), var(--font-serif-en);
+    font-family: var(--font-serif-zh), var(--font-vogue);
     margin: 0;
     padding: 0;
     display: flex;
@@ -27,34 +28,34 @@ body {
     display: flex; align-items: center; justify-content: center;
     text-align: center; padding: 30px;
 }
-.masthead { font-family: var(--font-serif-en); font-size: 4rem; font-weight: 700; letter-spacing: 8px; margin-bottom: 5px; color: var(--text-primary); }
+/* [修改] 標題使用新字體，更銳利 */
+.masthead { font-family: var(--font-vogue); font-size: 4.5rem; font-weight: 700; letter-spacing: 0.2em; margin-bottom: 5px; color: var(--text-primary); line-height: 1; }
 .issue-no { font-family: var(--font-sans); font-size: 0.7rem; letter-spacing: 2px; color: var(--text-secondary); margin-bottom: 50px; text-transform: uppercase; }
-.lock-title { font-size: 1.4rem; font-weight: normal; margin-bottom: 40px; color: var(--text-primary); }
+.lock-title { font-family: var(--font-serif-zh); font-size: 1.2rem; font-weight: 400; margin-bottom: 40px; color: var(--text-primary); letter-spacing: 3px; }
 .input-group { display: flex; flex-direction: column; gap: 25px; width: 100%; max-width: 320px; margin: 0 auto; }
-#access-code { background: transparent; border: none; border-bottom: 2px solid var(--accent-color); color: var(--text-primary); text-align: center; padding: 15px; font-size: 1.1rem; letter-spacing: 3px; outline: none; transition: 0.3s; border-radius: 0; }
-#access-code:focus { border-bottom-color: var(--text-primary); }
-#access-code::placeholder { color: #bbb; font-size: 0.9rem; letter-spacing: 1px;}
-.primary-btn { background: var(--text-primary); color: var(--bg-color); border: none; padding: 18px; font-family: var(--font-sans); font-weight: 600; cursor: pointer; letter-spacing: 2px; transition: 0.3s; text-transform: uppercase; }
+#access-code { background: transparent; border: none; border-bottom: 1px solid var(--text-primary); color: var(--text-primary); text-align: center; padding: 15px; font-size: 1.2rem; letter-spacing: 4px; outline: none; transition: 0.3s; border-radius: 0; font-family: var(--font-vogue); }
+#access-code:focus { border-bottom-width: 2px; }
+#access-code::placeholder { color: #bbb; font-size: 0.8rem; letter-spacing: 2px; font-family: var(--font-sans); }
+.primary-btn { background: var(--text-primary); color: var(--bg-color); border: none; padding: 18px; font-family: var(--font-sans); font-weight: 600; cursor: pointer; letter-spacing: 3px; transition: 0.3s; text-transform: uppercase; font-size: 0.8rem; }
 .primary-btn:hover { background: #333; }
 .error-msg { color: #c24f4f; font-size: 0.8rem; height: 20px; margin-top: 15px; font-family: var(--font-sans); }
-.lock-footer { margin-top: 60px; font-family: var(--font-sans); font-size: 0.8rem; color: var(--text-secondary); }
+.lock-footer { margin-top: 60px; font-family: var(--font-sans); font-size: 0.75rem; color: var(--text-secondary); letter-spacing: 1px; }
 .text-link { color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--accent-color); margin-left: 10px; padding-bottom: 2px; transition: 0.3s;}
 .text-link:hover { border-bottom-color: var(--text-primary); }
 
 /* --- Main App Styles --- */
 .container { width: 100%; padding: 20px; display: flex; flex-direction: column; gap: 30px; align-items: center; } 
 .header { text-align: center; margin-bottom: 10px; width: 100%; }
-.brand { font-family: var(--font-sans); font-size: 0.8rem; letter-spacing: 3px; color: var(--text-secondary); }
+.brand { font-family: var(--font-sans); font-size: 0.7rem; letter-spacing: 4px; color: var(--text-secondary); font-weight: 600; }
 .upload-zone { width: 100%; max-width: 375px; height: 350px; border: 1px solid var(--accent-color); padding: 15px; cursor: pointer; transition: 0.3s; background: #fff; box-sizing: border-box; }
 .upload-zone:hover { border-color: var(--text-primary); }
 .upload-frame { width: 100%; height: 100%; background: var(--bg-color); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
 .plus-icon { font-size: 3rem; font-weight: 100; color: var(--accent-color); margin-bottom: 20px; }
-.instruction { font-size: 1.1rem; margin-bottom: 10px; color: var(--text-primary); }
-.sub-instruction { font-family: var(--font-sans); color: var(--text-secondary); font-size: 0.75rem; letter-spacing: 1px; }
+.instruction { font-size: 1rem; margin-bottom: 10px; color: var(--text-primary); letter-spacing: 2px; }
+.sub-instruction { font-family: var(--font-sans); color: var(--text-secondary); font-size: 0.7rem; letter-spacing: 1px; }
 input[type="file"] { display: none; }
 
 /* --- THE MAGAZINE COVER (Result Card) --- */
-/* [關鍵修改] 這裡使用固定像素尺寸，確保 100% 不跑版 */
 .magazine-cover {
     background: #fff;
     padding: 0;
@@ -64,57 +65,83 @@ input[type="file"] { display: none; }
     position: relative;
     display: flex;
     flex-direction: column;
-    /* 鎖定標準手機寬度與 16:9 比例 */
     width: 375px;
     height: 667px;
-    min-width: 375px; /* 防止被壓縮 */
-    min-height: 667px; /* 防止被壓縮 */
+    min-width: 375px;
+    min-height: 667px;
 }
 
-.cover-header { position: absolute; top: 25px; left: 25px; right: 25px; display: flex; justify-content: space-between; font-family: var(--font-sans); font-size: 0.65rem; color: rgba(255,255,255,0.8); z-index: 10; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 10px; }
+.cover-header { position: absolute; top: 25px; left: 25px; right: 25px; display: flex; justify-content: space-between; font-family: var(--font-sans); font-size: 0.6rem; color: rgba(255,255,255,0.9); z-index: 10; letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.4); padding-bottom: 12px; font-weight: 600; }
 
-/* 照片容器 */
 .cover-image-container { position: relative; width: 100%; height: 62%; overflow: hidden; }
-
-/* [關鍵修改] 使用背景圖層取代 img 標籤 */
 .image-layer {
-    width: 100%;
-    height: 100%;
-    background-size: cover; /* 關鍵：保證填滿且不變形 */
-    background-position: center center; /* 關鍵：永遠置中 */
-    background-repeat: no-repeat;
-    /* 統一全彩，微調質感 */
+    width: 100%; height: 100%;
+    background-size: cover; background-position: center center; background-repeat: no-repeat;
     filter: contrast(1.05) saturate(1.05);
 }
+.texture-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 40%, rgba(10,10,10,0.85) 100%); mix-blend-mode: multiply; pointer-events: none; }
 
-.texture-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 40%, rgba(26,26,26,0.8) 100%); mix-blend-mode: multiply; pointer-events: none; }
-.cover-title-en { position: absolute; bottom: 50px; left: 25px; font-family: var(--font-serif-en); font-size: 3.5rem; line-height: 1; color: #fff; margin: 0; font-style: italic; z-index: 5; }
-.cover-title-zh { position: absolute; bottom: 25px; left: 30px; font-size: 1.2rem; color: rgba(255,255,255,0.9); margin: 0; z-index: 5; font-weight: normal; }
+/* [關鍵修改] 標題字體：更挺拔、移除斜體、增加間距 */
+.cover-title-en {
+    position: absolute; bottom: 55px; left: 25px; right: 25px; /* 增加 right 避免太長切到 */
+    font-family: var(--font-vogue);
+    font-size: 3.2rem; /* 稍微縮小一點點以適應不同字母寬度 */
+    line-height: 0.9;
+    color: #fff;
+    margin: 0;
+    font-style: normal; /* 移除斜體 */
+    font-weight: 700;   /* 使用粗體增加份量 */
+    letter-spacing: -0.02em; /* 標題字母稍微緊湊一點，更有現代雜誌感 */
+    z-index: 5;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3); /* 增加一點點陰影提升閱讀性 */
+}
 
-.editorial-content { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; background: #fff; }
-.analysis-body { margin-bottom: 10px; }
-.section-title { font-family: var(--font-sans); font-size: 0.6rem; letter-spacing: 2px; color: var(--text-secondary); text-transform: uppercase; margin: 0 0 10px 0; border-left: 2px solid var(--accent-color); padding-left: 10px; }
-.article-text { font-size: 0.85rem; line-height: 1.7; color: var(--text-primary); margin-bottom: 15px; text-align: justify; }
+.cover-title-zh {
+    position: absolute; bottom: 25px; left: 28px;
+    font-family: var(--font-serif-zh);
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.95);
+    margin: 0;
+    z-index: 5;
+    font-weight: 300;
+    letter-spacing: 0.1em; /* 中文增加間距 */
+}
+
+.editorial-content { padding: 30px 25px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; background: #fff; }
+
+.section-title {
+    font-family: var(--font-sans);
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin: 0 0 12px 0;
+    font-weight: 600;
+    display: flex; align-items: center; gap: 10px;
+}
+.section-title::before { content: ''; width: 20px; height: 1px; background: #000; display: block; } /* 裝飾線 */
+
+.article-text { font-family: var(--font-serif-zh); font-size: 0.85rem; line-height: 1.8; color: var(--text-primary); margin-bottom: 15px; text-align: justify; font-weight: 300;}
 
 .specs-container { display: flex; border-top: 1px solid var(--accent-color); padding-top: 15px; margin-bottom: 15px; }
 .spec-col { flex: 1; }
-.spec-label { display: block; font-family: var(--font-sans); font-size: 0.6rem; color: var(--text-secondary); letter-spacing: 1px; margin-bottom: 3px;}
-.spec-value { display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-primary); }
+.spec-label { display: block; font-family: var(--font-sans); font-size: 0.6rem; color: var(--text-secondary); letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase;}
+.spec-value { display: block; font-family: var(--font-vogue); font-size: 0.9rem; font-weight: 600; color: var(--text-primary); letter-spacing: 0.5px;}
 
-.palette-section { margin-bottom: 10px; }
+.palette-section { margin-bottom: 5px; }
 .color-chips { display: flex; gap: 8px; margin-top: 5px;}
-.chip { width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); }
+.chip { width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); }
 .cover-footer { border-top: 1px solid var(--accent-color); padding-top: 15px; text-align: center; }
-.signature { font-family: var(--font-serif-en); font-style: italic; font-size: 0.7rem; color: var(--text-secondary); }
+.signature { font-family: var(--font-vogue); font-style: italic; font-size: 0.75rem; color: var(--text-secondary); letter-spacing: 1px; } /* 簽名保留斜體比較優雅 */
 
 .action-panel { text-align: center; margin-top: 20px; width: 100%; }
-.cta-guide { font-size: 0.9rem; color: var(--text-primary); margin-bottom: 20px; }
-.cta-btn { display: block; background: var(--text-primary); color: var(--bg-color); text-decoration: none; padding: 20px; font-family: var(--font-sans); font-size: 0.9rem; letter-spacing: 2px; font-weight: 600; margin-bottom: 15px; transition: 0.3s; }
-.cta-btn:hover { background: #444; }
-.secondary-btn { width: 100%; background: transparent; border: 1px solid var(--text-primary); color: var(--text-primary); padding: 18px; font-family: var(--font-sans); font-size: 0.8rem; letter-spacing: 2px; cursor: pointer; transition: 0.3s; }
+.cta-guide { font-size: 0.9rem; color: var(--text-primary); margin-bottom: 20px; font-family: var(--font-serif-zh); }
+.cta-btn { display: block; background: var(--text-primary); color: var(--bg-color); text-decoration: none; padding: 20px; font-family: var(--font-sans); font-size: 0.85rem; letter-spacing: 2px; font-weight: 600; margin-bottom: 15px; transition: 0.3s; text-transform: uppercase; }
+.cta-btn:hover { background: #333; }
+.secondary-btn { width: 100%; background: transparent; border: 1px solid var(--text-primary); color: var(--text-primary); padding: 18px; font-family: var(--font-sans); font-size: 0.8rem; letter-spacing: 2px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
 .secondary-btn:hover { background: var(--text-primary); color: var(--bg-color); }
 
 .hidden { display: none !important; }
-.loader { text-align: center; padding: 50px; font-family: var(--font-sans); font-size: 0.8rem; letter-spacing: 2px; color: var(--text-secondary);}
+.loader { text-align: center; padding: 50px; font-family: var(--font-sans); font-size: 0.8rem; letter-spacing: 2px; color: var(--text-secondary); text-transform: uppercase;}
 .blink { animation: blinker 2s linear infinite; }
 @keyframes blinker { 50% { opacity: 0.3; } }
