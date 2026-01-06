@@ -1,3 +1,41 @@
+// --- ACCESS CONTROL ---
+const CORRECT_CODE = "EDEN2025";
+const enterBtn = document.getElementById('enter-btn');
+const accessInput = document.getElementById('access-code');
+const lockScreen = document.getElementById('lock-screen');
+const appContainer = document.getElementById('app-container');
+const errorMsg = document.getElementById('error-msg');
+
+// 點擊按鈕或按 Enter 鍵觸發
+enterBtn.addEventListener('click', checkAccess);
+accessInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') checkAccess();
+});
+
+function checkAccess() {
+    const userCode = accessInput.value.trim().toUpperCase(); // 強制轉大寫
+    if (userCode === CORRECT_CODE) {
+        // 成功：淡出鎖定頁面，顯示主程式
+        lockScreen.style.opacity = '0';
+        lockScreen.style.transition = 'opacity 0.5s';
+        setTimeout(() => {
+            lockScreen.classList.add('hidden');
+            appContainer.classList.remove('hidden');
+        }, 500);
+    } else {
+        // 失敗
+        errorMsg.innerText = "ACCESS DENIED. INCORRECT CODE.";
+        accessInput.value = "";
+    }
+}
+
+// --- MAIN APP LOGIC ---
+
+// 觸發文件選擇
+document.getElementById('upload-zone').addEventListener('click', function() {
+    document.getElementById('imageInput').click();
+});
+
 document.getElementById('imageInput').addEventListener('change', function(e) {
     if(e.target.files && e.target.files[0]) {
         startAnalysis(e.target.files[0]);
@@ -13,11 +51,12 @@ function startAnalysis(file) {
         const img = new Image();
         img.onload = function() {
             const results = analyzeImage(img);
+            // 模擬運算時間 (2秒)
             setTimeout(() => {
                 renderResult(results, event.target.result);
                 document.getElementById('loader').classList.add('hidden');
                 document.getElementById('result-section').classList.remove('hidden');
-            }, 1500);
+            }, 2000);
         }
         img.src = event.target.result;
     }
@@ -55,29 +94,30 @@ function renderResult(data, imgSrc) {
     
     let type = "", material = "", light = "", desc = "", colors = [];
     
+    // 建築系文案 (保留之前的邏輯)
     if (data.isWarm && !data.isHighContrast) {
-        type = "TIMBER (木質調)";
-        material = "LINEN / WOOD / EARTH";
-        light = "WARM 3000K / DIFFUSED";
-        desc = "你的特質溫潤且低反射。高光會讓你的質感流失，建議使用漫射光與吸光材質。";
+        type = "TIMBER";
+        material = "Linen / Wood / Matte";
+        light = "Diffused Warm";
+        desc = "你的特質溫潤，如未經打磨的原木。強光會破壞你的質感，建議使用柔和的漫射光與吸光材質。";
         colors = ['#8D6E63', '#D7CCC8', '#5D4037'];
     } else if (data.isWarm && data.isHighContrast) {
-        type = "BRICK (紅磚調)";
-        material = "LEATHER / VELVET / BRASS";
-        light = "WARM 2700K / SPOT";
-        desc = "你擁有強烈的視覺重量。你需要有重量感的材質與戲劇性的點光源來強調輪廓。";
+        type = "BRICK";
+        material = "Leather / Velvet";
+        light = "Spot / Dramatic";
+        desc = "你擁有強烈的視覺重量。你需要有重量感的材質與戲劇性的點光源來強調深邃輪廓。";
         colors = ['#BF360C', '#FFAB91', '#3E2723'];
     } else if (!data.isWarm && !data.isHighContrast) {
-        type = "CONCRETE (清水模)";
-        material = "COTTON / PURE WHITE / SILVER";
-        light = "COOL 4000K / SOFT";
-        desc = "你的氣質純淨。簡單的剪裁與冷白光能最大化你的高級感。";
+        type = "CONCRETE";
+        material = "Cotton / Pure White";
+        light = "Soft Cool";
+        desc = "你的氣質純淨如清水模。過多的裝飾是累贅，極簡的剪裁與冷白光能最大化你的高級感。";
         colors = ['#CFD8DC', '#90A4AE', '#455A64'];
     } else {
-        type = "STEEL (鋼構調)";
-        material = "SATIN / GLASS / BLACK";
-        light = "DAYLIGHT 5600K / HARD";
-        desc = "你是高對比的冷調存在。大膽嘗試反光材質與銳利的硬光，展現俐落感。";
+        type = "STEEL";
+        material = "Satin / Glass / Black";
+        light = "Hard Daylight";
+        desc = "你是高對比的冷調存在。大膽嘗試反光材質與銳利的硬光，展現建築鋼構般的俐落感。";
         colors = ['#263238', '#ECEFF1', '#000000'];
     }
     
@@ -101,11 +141,11 @@ document.getElementById('download-btn').addEventListener('click', function() {
     const card = document.getElementById('capture-area');
     const btn = this;
     const originalText = btn.innerText;
-    btn.innerText = "GENERATING...";
+    btn.innerText = "RENDERING...";
     
     html2canvas(card, {
         scale: 2, 
-        backgroundColor: "#141414",
+        backgroundColor: "#0a0a0a", // 確保下載圖片背景正確
         useCORS: true 
     }).then(canvas => {
         const link = document.createElement('a');
