@@ -1,17 +1,17 @@
 :root {
-    --bg-color: #f8f7f5; /* 溫潤的米白色，像高級紙張 */
-    --text-primary: #1a1a1a; /* 深炭灰，比純黑更優雅 */
+    --bg-color: #f8f7f5;
+    --text-primary: #1a1a1a;
     --text-secondary: #666666;
-    --accent-color: #e0dcd6; /* 淺卡其色裝飾 */
+    --accent-color: #e0dcd6;
     --font-serif-en: 'Playfair Display', serif;
     --font-serif-zh: 'Noto Serif TC', serif;
-    --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* 用於小標籤的乾淨字體 */
+    --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 body {
     background-color: var(--bg-color);
     color: var(--text-primary);
-    font-family: var(--font-serif-zh), var(--font-serif-en); /* 預設使用襯線體 */
+    font-family: var(--font-serif-zh), var(--font-serif-en);
     margin: 0;
     padding: 0;
     display: flex;
@@ -20,83 +20,21 @@ body {
     line-height: 1.6;
 }
 
-/* --- Lock Screen (VIP Entrance) --- */
+/* --- Lock Screen --- */
 .lock-screen {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-color: var(--bg-color);
-    z-index: 999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 30px;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: var(--bg-color); z-index: 999;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 30px;
 }
-
-.masthead {
-    font-family: var(--font-serif-en);
-    font-size: 4rem;
-    font-weight: 700;
-    letter-spacing: 8px;
-    margin-bottom: 5px;
-    color: var(--text-primary);
-}
-
-.issue-no {
-    font-family: var(--font-sans);
-    font-size: 0.7rem;
-    letter-spacing: 2px;
-    color: var(--text-secondary);
-    margin-bottom: 50px;
-    text-transform: uppercase;
-}
-
-.lock-title {
-    font-size: 1.4rem;
-    font-weight: normal;
-    margin-bottom: 40px;
-    color: var(--text-primary);
-}
-
-.input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    width: 100%;
-    max-width: 320px;
-    margin: 0 auto;
-}
-
-#access-code {
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid var(--accent-color);
-    color: var(--text-primary);
-    text-align: center;
-    padding: 15px;
-    font-size: 1.1rem;
-    letter-spacing: 3px;
-    outline: none;
-    transition: 0.3s;
-    border-radius: 0; /* 移除 iOS 預設圓角 */
-}
-
+.masthead { font-family: var(--font-serif-en); font-size: 4rem; font-weight: 700; letter-spacing: 8px; margin-bottom: 5px; color: var(--text-primary); }
+.issue-no { font-family: var(--font-sans); font-size: 0.7rem; letter-spacing: 2px; color: var(--text-secondary); margin-bottom: 50px; text-transform: uppercase; }
+.lock-title { font-size: 1.4rem; font-weight: normal; margin-bottom: 40px; color: var(--text-primary); }
+.input-group { display: flex; flex-direction: column; gap: 25px; width: 100%; max-width: 320px; margin: 0 auto; }
+#access-code { background: transparent; border: none; border-bottom: 2px solid var(--accent-color); color: var(--text-primary); text-align: center; padding: 15px; font-size: 1.1rem; letter-spacing: 3px; outline: none; transition: 0.3s; border-radius: 0; }
 #access-code:focus { border-bottom-color: var(--text-primary); }
 #access-code::placeholder { color: #bbb; font-size: 0.9rem; letter-spacing: 1px;}
-
-.primary-btn {
-    background: var(--text-primary);
-    color: var(--bg-color);
-    border: none;
-    padding: 18px;
-    font-family: var(--font-sans);
-    font-weight: 600;
-    cursor: pointer;
-    letter-spacing: 2px;
-    transition: 0.3s;
-    text-transform: uppercase;
-}
-
+.primary-btn { background: var(--text-primary); color: var(--bg-color); border: none; padding: 18px; font-family: var(--font-sans); font-weight: 600; cursor: pointer; letter-spacing: 2px; transition: 0.3s; text-transform: uppercase; }
 .primary-btn:hover { background: #333; }
 .error-msg { color: #c24f4f; font-size: 0.8rem; height: 20px; margin-top: 15px; font-family: var(--font-sans); }
 .lock-footer { margin-top: 60px; font-family: var(--font-sans); font-size: 0.8rem; color: var(--text-secondary); }
@@ -104,38 +42,12 @@ body {
 .text-link:hover { border-bottom-color: var(--text-primary); }
 
 /* --- Main App Styles --- */
-.container {
-    width: 100%;
-    max-width: 500px; /* 稍微放寬以適應雜誌排版 */
-    padding: 40px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-}
-
+.container { width: 100%; max-width: 500px; padding: 40px 20px; display: flex; flex-direction: column; gap: 40px; }
 .header { text-align: center; margin-bottom: 20px; }
 .brand { font-family: var(--font-sans); font-size: 0.8rem; letter-spacing: 3px; color: var(--text-secondary); }
-
-/* Upload Zone as a Frame */
-.upload-zone {
-    height: 350px;
-    border: 1px solid var(--accent-color);
-    padding: 15px;
-    cursor: pointer;
-    transition: 0.3s;
-    background: #fff;
-}
-
+.upload-zone { height: 350px; border: 1px solid var(--accent-color); padding: 15px; cursor: pointer; transition: 0.3s; background: #fff; }
 .upload-zone:hover { border-color: var(--text-primary); }
-
-.upload-frame {
-    width: 100%; height: 100%;
-    background: var(--bg-color);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    position: relative;
-}
-
+.upload-frame { width: 100%; height: 100%; background: var(--bg-color); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
 .plus-icon { font-size: 3rem; font-weight: 100; color: var(--accent-color); margin-bottom: 20px; }
 .instruction { font-size: 1.1rem; margin-bottom: 10px; color: var(--text-primary); }
 .sub-instruction { font-family: var(--font-sans); color: var(--text-secondary); font-size: 0.75rem; letter-spacing: 1px; }
@@ -144,105 +56,48 @@ input[type="file"] { display: none; }
 /* --- THE MAGAZINE COVER (Result Card) --- */
 .magazine-cover {
     background: #fff;
-    padding: 0; /* 移除內距，讓照片滿版 */
+    padding: 0;
     border: none;
     box-shadow: 0 20px 40px rgba(0,0,0,0.05);
     overflow: hidden;
     position: relative;
     display: flex;
     flex-direction: column;
-    /* 強制直式比例，類似雜誌 */
-    aspect-ratio: 3/5; 
+    /* 讓高度自然撐開 */
+    min-height: 700px; 
 }
 
-.cover-header {
-    position: absolute; top: 25px; left: 25px; right: 25px;
-    display: flex; justify-content: space-between;
-    font-family: var(--font-sans); font-size: 0.65rem;
-    color: rgba(255,255,255,0.8); z-index: 10; letter-spacing: 1px;
-    border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 10px;
-}
+.cover-header { position: absolute; top: 25px; left: 25px; right: 25px; display: flex; justify-content: space-between; font-family: var(--font-sans); font-size: 0.65rem; color: rgba(255,255,255,0.8); z-index: 10; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 10px; }
 
-/* 照片區：佔據上方大部分空間 */
-.cover-image-container {
-    position: relative;
-    width: 100%;
-    height: 65%; /* 照片佔 65% 高度 */
-    overflow: hidden;
-}
-
+.cover-image-container { position: relative; width: 100%; height: 450px; overflow: hidden; }
 .cover-image-container img {
     width: 100%; height: 100%; object-fit: cover;
-    /* 增加一點雜誌印刷的顆粒感與黑白濾鏡 */
-    filter: grayscale(100%) contrast(1.1) brightness(0.95);
+    /* [修改處] 移除 grayscale，保留色彩，稍微增加對比度提升質感 */
+    filter: contrast(1.05) saturate(1.05);
 }
 
-.texture-overlay {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(to bottom, transparent 40%, rgba(26,26,26,0.8) 100%); /* 底部漸層變黑 */
-    mix-blend-mode: multiply;
-    pointer-events: none;
-}
+.texture-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 40%, rgba(26,26,26,0.8) 100%); mix-blend-mode: multiply; pointer-events: none; }
+.cover-title-en { position: absolute; bottom: 50px; left: 25px; font-family: var(--font-serif-en); font-size: 3.5rem; line-height: 1; color: #fff; margin: 0; font-style: italic; z-index: 5; }
+.cover-title-zh { position: absolute; bottom: 25px; left: 30px; font-size: 1.2rem; color: rgba(255,255,255,0.9); margin: 0; z-index: 5; font-weight: normal; }
 
-/* 標題疊加在照片上 */
-.cover-title-en {
-    position: absolute; bottom: 50px; left: 25px;
-    font-family: var(--font-serif-en); font-size: 3.5rem; line-height: 1;
-    color: #fff; margin: 0; font-style: italic; z-index: 5;
-}
-.cover-title-zh {
-    position: absolute; bottom: 25px; left: 30px;
-    font-size: 1.2rem; color: rgba(255,255,255,0.9); margin: 0; z-index: 5; font-weight: normal;
-}
-
-/* 編輯內容區：下方白色區域 */
-.editorial-content {
-    padding: 35px 25px 25px 25px;
-    flex-grow: 1;
-    display: flex; flex-direction: column; justify-content: space-between;
-    background: #fff;
-}
-
-.section-title {
-    font-family: var(--font-sans); font-size: 0.6rem; letter-spacing: 2px;
-    color: var(--text-secondary); text-transform: uppercase; margin: 0 0 15px 0;
-    border-left: 2px solid var(--accent-color); padding-left: 10px;
-}
-
-.article-text {
-    font-size: 0.9rem; line-height: 1.8; color: var(--text-primary);
-    margin-bottom: 30px; text-align: justify;
-}
-
-.specs-container {
-    display: flex; border-top: 1px solid var(--accent-color);
-    padding-top: 20px; margin-bottom: 25px;
-}
+.editorial-content { padding: 35px 25px 25px 25px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; background: #fff; }
+.section-title { font-family: var(--font-sans); font-size: 0.6rem; letter-spacing: 2px; color: var(--text-secondary); text-transform: uppercase; margin: 0 0 15px 0; border-left: 2px solid var(--accent-color); padding-left: 10px; }
+.article-text { font-size: 0.9rem; line-height: 1.8; color: var(--text-primary); margin-bottom: 30px; text-align: justify; }
+.specs-container { display: flex; border-top: 1px solid var(--accent-color); padding-top: 20px; margin-bottom: 25px; }
 .spec-col { flex: 1; }
 .spec-label { display: block; font-family: var(--font-sans); font-size: 0.6rem; color: var(--text-secondary); letter-spacing: 1px; margin-bottom: 5px;}
 .spec-value { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-primary); }
-
 .palette-section { margin-bottom: 10px; }
 .color-chips { display: flex; gap: 10px; margin-top: 10px;}
-.chip { width: 35px; height: 35px; border-radius: 50%; /* 圓形色票更時尚 */ border: 1px solid rgba(0,0,0,0.1); }
-
+.chip { width: 35px; height: 35px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); }
 .cover-footer { border-top: 1px solid var(--accent-color); padding-top: 15px; text-align: center; }
 .signature { font-family: var(--font-serif-en); font-style: italic; font-size: 0.7rem; color: var(--text-secondary); }
 
-/* CTA Buttons */
 .action-panel { text-align: center; margin-top: 30px; }
 .cta-guide { font-size: 0.9rem; color: var(--text-primary); margin-bottom: 20px; }
-.cta-btn {
-    display: block; background: var(--text-primary); color: var(--bg-color);
-    text-decoration: none; padding: 20px; font-family: var(--font-sans);
-    font-size: 0.9rem; letter-spacing: 2px; font-weight: 600; margin-bottom: 15px; transition: 0.3s;
-}
+.cta-btn { display: block; background: var(--text-primary); color: var(--bg-color); text-decoration: none; padding: 20px; font-family: var(--font-sans); font-size: 0.9rem; letter-spacing: 2px; font-weight: 600; margin-bottom: 15px; transition: 0.3s; }
 .cta-btn:hover { background: #444; }
-.secondary-btn {
-    width: 100%; background: transparent; border: 1px solid var(--text-primary);
-    color: var(--text-primary); padding: 18px; font-family: var(--font-sans);
-    font-size: 0.8rem; letter-spacing: 2px; cursor: pointer; transition: 0.3s;
-}
+.secondary-btn { width: 100%; background: transparent; border: 1px solid var(--text-primary); color: var(--text-primary); padding: 18px; font-family: var(--font-sans); font-size: 0.8rem; letter-spacing: 2px; cursor: pointer; transition: 0.3s; }
 .secondary-btn:hover { background: var(--text-primary); color: var(--bg-color); }
 
 .hidden { display: none !important; }
