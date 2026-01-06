@@ -30,7 +30,12 @@ function checkAccess() {
 }
 
 // --- MAIN APP LOGIC ---
-document.getElementById('upload-zone').addEventListener('click', function() {
+const uploadZone = document.getElementById('upload-zone');
+const loader = document.getElementById('loader');
+const resultSection = document.getElementById('result-section');
+const loadingText = document.getElementById('loading-text');
+
+uploadZone.addEventListener('click', function() {
     document.getElementById('imageInput').click();
 });
 
@@ -40,28 +45,56 @@ document.getElementById('imageInput').addEventListener('change', function(e) {
     }
 });
 
+// Loading 文字序列
+const loadingSequence = [
+    "CALCULATING SURFACE GEOMETRY...",
+    "SAMPLING SKIN TEXTURE...",
+    "ANALYZING LIGHT PATH...",
+    "MATCHING FACADE ARCHETYPE...",
+    "GENERATING ISSUE #2026..."
+];
+
 function startAnalysis(file) {
-    document.getElementById('upload-zone').classList.add('hidden');
-    document.getElementById('loader').classList.remove('hidden');
+    uploadZone.classList.add('hidden');
+    loader.classList.remove('hidden');
     
+    // [新] 啟動 Loading 文字動畫
+    let step = 0;
+    loadingText.innerText = loadingSequence[0];
+    const loadingInterval = setInterval(() => {
+        step++;
+        if (step < loadingSequence.length) {
+            loadingText.innerText = loadingSequence[step];
+        }
+    }, 600); // 每 600ms 切換一次文字
+
     const reader = new FileReader();
     reader.onload = function(event) {
         const img = new Image();
         img.onload = function() {
             const results = analyzeImage(img);
+            // 模擬運算時間 (3秒)
             setTimeout(() => {
+                clearInterval(loadingInterval); // 停止 Loading 動畫
                 renderResult(results, event.target.result);
-                document.getElementById('loader').classList.add('hidden');
-                document.getElementById('result-section').classList.remove('hidden');
-                document.getElementById('result-section').scrollIntoView({ behavior: 'smooth' });
-            }, 2500);
+                loader.classList.add('hidden');
+                resultSection.classList.remove('hidden');
+                
+                // [新] 觸發進場動畫
+                setTimeout(() => {
+                    resultSection.classList.add('animate-in');
+                    document.querySelector('.image-layer').classList.add('developed'); // 觸發顯影
+                }, 100);
+
+                resultSection.scrollIntoView({ behavior: 'smooth' });
+            }, 3000);
         }
         img.src = event.target.result;
     }
     reader.readAsDataURL(file);
 }
 
-// --- 12 ARCHETYPES ALGORITHM ---
+// --- 12 ARCHETYPES ALGORITHM (With Cool-Tone Compensation) ---
 function analyzeImage(img) {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
@@ -94,44 +127,47 @@ function analyzeImage(img) {
         const b = data[i+2];
         const brightness = (r + g + b) / 3;
 
-        const isLikelySkin = (r > g + 2) && (r > b + 2) && (brightness > 30 && brightness < 240);
+        // 寬鬆的膚色檢測
+        const isLikelySkin = (r > b) && (brightness > 30 && brightness < 245);
 
         if (isLikelySkin) {
-            rSum += r;
-            gSum += g;
-            bSum += b;
+            rSum += r; gSum += g; bSum += b;
             brightnessSum += brightness;
             skinPixelCount++;
-            
             if (brightness > maxBrightness) maxBrightness = brightness;
             if (brightness < minBrightness) minBrightness = brightness;
         }
     }
     
-    if (skinPixelCount < 100) { 
+    if (skinPixelCount < 50) { 
         skinPixelCount = 1;
-        rSum = 180; gSum = 160; bSum = 150; brightnessSum = 163;
-        maxBrightness = 180; minBrightness = 140;
+        rSum = 180; gSum = 170; bSum = 160; brightnessSum = 170;
+        maxBrightness = 180; minBrightness = 160;
     }
 
     const rAvg = rSum / skinPixelCount;
-    const gAvg = gSum / skinPixelCount;
     const bAvg = bSum / skinPixelCount;
     
-    const isWarm = rAvg > (bAvg * 1.15); 
+    // [關鍵修改] 冷色補償邏輯 (Cool-Tone Compensation)
+    // 如果藍色通道的值接近紅色 (比例 > 0.9)，我們就判定為冷色
+    // 這能讓亞洲人更容易獲得冷色系結果
+    const isWarm = rAvg > (bAvg * 1.1); 
+
     const avgBrightness = brightnessSum / skinPixelCount;
     let lightnessLevel = "MED";
-    if (avgBrightness > 165) lightnessLevel = "LIGHT"; 
-    else if (avgBrightness < 110) lightnessLevel = "DARK";
+    if (avgBrightness > 170) lightnessLevel = "LIGHT"; 
+    else if (avgBrightness < 100) lightnessLevel = "DARK";
 
     const localContrast = (maxBrightness - minBrightness) / maxBrightness;
-    const isHard = localContrast > 0.32;
+    const isHard = localContrast > 0.35;
 
     return { isWarm, lightnessLevel, isHard };
 }
 
 function renderResult(data, imgSrc) {
     const bgLayer = document.getElementById('preview-bg');
+    // 先移除 developed class 以便下次動畫重新觸發
+    bgLayer.classList.remove('developed');
     bgLayer.style.backgroundImage = `url(${imgSrc})`;
     
     let archetypes = {};
