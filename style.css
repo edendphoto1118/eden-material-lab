@@ -42,11 +42,10 @@ body {
 .text-link:hover { border-bottom-color: var(--text-primary); }
 
 /* --- Main App Styles --- */
-/* [修改] 容器最大寬度設為 450px，確保像手機版面 */
-.container { width: 100%; max-width: 450px; padding: 20px; display: flex; flex-direction: column; gap: 30px; align-items: center; } 
+.container { width: 100%; padding: 20px; display: flex; flex-direction: column; gap: 30px; align-items: center; } 
 .header { text-align: center; margin-bottom: 10px; width: 100%; }
 .brand { font-family: var(--font-sans); font-size: 0.8rem; letter-spacing: 3px; color: var(--text-secondary); }
-.upload-zone { width: 100%; height: 350px; border: 1px solid var(--accent-color); padding: 15px; cursor: pointer; transition: 0.3s; background: #fff; box-sizing: border-box; }
+.upload-zone { width: 100%; max-width: 375px; height: 350px; border: 1px solid var(--accent-color); padding: 15px; cursor: pointer; transition: 0.3s; background: #fff; box-sizing: border-box; }
 .upload-zone:hover { border-color: var(--text-primary); }
 .upload-frame { width: 100%; height: 100%; background: var(--bg-color); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
 .plus-icon { font-size: 3rem; font-weight: 100; color: var(--accent-color); margin-bottom: 20px; }
@@ -55,6 +54,7 @@ body {
 input[type="file"] { display: none; }
 
 /* --- THE MAGAZINE COVER (Result Card) --- */
+/* [關鍵修改] 這裡使用固定像素尺寸，確保 100% 不跑版 */
 .magazine-cover {
     background: #fff;
     padding: 0;
@@ -64,18 +64,26 @@ input[type="file"] { display: none; }
     position: relative;
     display: flex;
     flex-direction: column;
-    width: 100%;
-    /* [關鍵修改] 強制設定長寬比為 9:16 (IG限動尺寸)，所見即所得 */
-    aspect-ratio: 9/16; 
+    /* 鎖定標準手機寬度與 16:9 比例 */
+    width: 375px;
+    height: 667px;
+    min-width: 375px; /* 防止被壓縮 */
+    min-height: 667px; /* 防止被壓縮 */
 }
 
 .cover-header { position: absolute; top: 25px; left: 25px; right: 25px; display: flex; justify-content: space-between; font-family: var(--font-sans); font-size: 0.65rem; color: rgba(255,255,255,0.8); z-index: 10; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 10px; }
 
-/* [修改] 照片區域高度改為百分比，配合 aspect-ratio 自動伸縮 */
-.cover-image-container { position: relative; width: 100%; height: 60%; overflow: hidden; }
-.cover-image-container img {
-    width: 100%; height: 100%; object-fit: cover;
-    /* 全彩設定，微調對比 */
+/* 照片容器 */
+.cover-image-container { position: relative; width: 100%; height: 62%; overflow: hidden; }
+
+/* [關鍵修改] 使用背景圖層取代 img 標籤 */
+.image-layer {
+    width: 100%;
+    height: 100%;
+    background-size: cover; /* 關鍵：保證填滿且不變形 */
+    background-position: center center; /* 關鍵：永遠置中 */
+    background-repeat: no-repeat;
+    /* 統一全彩，微調質感 */
     filter: contrast(1.05) saturate(1.05);
 }
 
@@ -86,7 +94,6 @@ input[type="file"] { display: none; }
 .editorial-content { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; background: #fff; }
 .analysis-body { margin-bottom: 10px; }
 .section-title { font-family: var(--font-sans); font-size: 0.6rem; letter-spacing: 2px; color: var(--text-secondary); text-transform: uppercase; margin: 0 0 10px 0; border-left: 2px solid var(--accent-color); padding-left: 10px; }
-/* [修改] 字體大小稍微縮小以適應固定比例 */
 .article-text { font-size: 0.85rem; line-height: 1.7; color: var(--text-primary); margin-bottom: 15px; text-align: justify; }
 
 .specs-container { display: flex; border-top: 1px solid var(--accent-color); padding-top: 15px; margin-bottom: 15px; }
