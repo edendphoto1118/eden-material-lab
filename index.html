@@ -3,96 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EDEN MATERIAL LAB</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>EDEN | 你的材質解構報告</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="lock-screen" class="lock-screen">
         <div class="lock-content">
-            <h1 class="brand-title">EDEN</h1>
-            <p class="brand-subtitle">MATERIAL & LIGHT ANALYSIS</p>
+            <div class="masthead">EDEN</div>
+            <p class="issue-no">ISSUE 2025. MATERIAL ADVISORY</p>
+            <h1 class="lock-title">私人材質解構室</h1>
             
             <div class="input-group">
-                <input type="text" id="access-code" placeholder="ENTER ACCESS CODE" autocomplete="off">
-                <button id="enter-btn" class="primary-btn">ENTER</button>
+                <input type="text" id="access-code" placeholder="請輸入邀請碼" autocomplete="off">
+                <button id="enter-btn" class="primary-btn">進入解讀</button>
             </div>
             
             <p id="error-msg" class="error-msg"></p>
 
             <div class="lock-footer">
-                <p>NO ACCESS CODE?</p>
-                <a href="https://www.instagram.com/eden_d_photo/" target="_blank" class="text-link">DM "EDEN" ON INSTAGRAM</a>
+                <span>尚未持有邀請碼？</span>
+                <a href="https://www.instagram.com/eden_d_photo/" target="_blank" class="text-link">私訊 Instagram 獲取</a>
             </div>
         </div>
     </div>
 
     <div id="app-container" class="container hidden">
         <header class="header">
-            <div class="brand">EDEN // LAB</div>
-            <div class="status">ID: AUTHENTICATED</div>
+            <div class="brand">EDEN / ARCHIVE</div>
         </header>
 
         <section id="upload-zone" class="upload-zone">
-            <div class="dashed-border">
+            <div class="upload-frame">
                 <input type="file" id="imageInput" accept="image/*">
-                <p class="instruction">UPLOAD PORTRAIT</p>
-                <p class="sub-instruction">Natural Light Only</p>
+                <span class="plus-icon">+</span>
+                <p class="instruction">載入您的肖像</p>
+                <p class="sub-instruction">建議使用自然光拍攝之照片</p>
             </div>
         </section>
 
         <div id="loader" class="loader hidden">
-            <div class="line-scan"></div>
-            <p class="blink">CALCULATING TEXTURE...</p>
+            <p class="blink">正在解構光影數據...</p>
         </div>
 
         <section id="result-section" class="result-section hidden">
             
-            <div class="material-card" id="capture-area">
-                <div class="card-header">
-                    <span>ARCHITECTURAL ANALYSIS</span>
-                    <span>2025 // EDEN</span>
+            <div class="magazine-cover" id="capture-area">
+                <div class="cover-header">
+                    <span>EDEN / SPECIAL ISSUE</span>
+                    <span>#2025_MQ2</span>
                 </div>
                 
-                <div class="card-body">
-                    <div class="photo-preview">
-                        <img id="preview-img" src="" alt="User Scan">
-                        <div class="overlay-grid"></div>
+                <div class="cover-image-container">
+                    <img id="preview-img" src="" alt="Cover Portrait">
+                    <div class="texture-overlay"></div>
+                    <h2 id="material-type-en" class="cover-title-en">ANALYZING</h2>
+                    <h3 id="material-type-zh" class="cover-title-zh">解構中</h3>
+                </div>
+                
+                <div class="editorial-content">
+                    <div class="analysis-body">
+                        <h4 class="section-title">編輯解讀 / EDITOR'S NOTE</h4>
+                        <p id="analysis-text" class="article-text">...</p>
                     </div>
-                    
-                    <div class="data-panel">
-                        <div class="data-row">
-                            <span class="label">MATERIAL CLASS</span>
-                            <h2 id="material-type" class="serif-title">ANALYZING...</h2>
+
+                    <div class="specs-container">
+                        <div class="spec-col">
+                            <span class="spec-label">建議光源 / Lighting</span>
+                            <span id="lighting-req" class="spec-value">...</span>
                         </div>
-                        <div class="split-row">
-                            <div class="data-col">
-                                <span class="label">LIGHT</span>
-                                <span id="lighting-req">...</span>
-                            </div>
-                            <div class="data-col">
-                                <span class="label">TEXTURE</span>
-                                <span id="texture-rec">...</span>
-                            </div>
+                        <div class="spec-col">
+                            <span class="spec-label">適合材質 / Texture</span>
+                            <span id="texture-rec" class="spec-value">...</span>
                         </div>
+                    </div>
                         
-                        <div class="palette">
-                            <span class="label">PALETTE</span>
-                            <div class="color-chips" id="color-chips"></div>
-                        </div>
+                    <div class="palette-section">
+                        <span class="spec-label">專屬色號 / Palette</span>
+                        <div class="color-chips" id="color-chips"></div>
                     </div>
                 </div>
-                
-                <div class="card-footer">
-                    <div class="signature">Eden.D Certified</div>
+
+                <div class="cover-footer">
+                    <div class="signature">Visual Direction by EDEN.D</div>
                 </div>
             </div>
-
             <div class="action-panel">
-                <p class="analysis-summary" id="analysis-text">...</p>
-                <a href="https://www.instagram.com/eden_d_photo/" target="_blank" class="cta-btn">BOOK SESSION (IG)</a>
-                <button id="download-btn" class="secondary-btn">DOWNLOAD RESULT</button>
+                <p class="cta-guide">想要您的專屬光影方案？</p>
+                <a href="https://www.instagram.com/eden_d_photo/" target="_blank" class="cta-btn">預約 EDEN 商業拍攝 (IG)</a>
+                <button id="download-btn" class="secondary-btn">收藏我的分析報告</button>
             </div>
 
         </section>
