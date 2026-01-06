@@ -82,7 +82,10 @@ function analyzeImage(img) {
 }
 
 function renderResult(data, imgSrc) {
-    document.getElementById('preview-img').src = imgSrc;
+    // [關鍵修改] 改為設定背景圖片，而不是 img src
+    const bgLayer = document.getElementById('preview-bg');
+    bgLayer.style.backgroundImage = `url(${imgSrc})`;
+    
     let typeEn = "", typeZh = "", material = "", light = "", desc = "", colors = [];
     
     if (data.isWarm && !data.isHighContrast) {
@@ -123,7 +126,7 @@ function renderResult(data, imgSrc) {
     });
 }
 
-// --- 自動截圖功能 (WYSIWYG) ---
+// --- 自動截圖功能 ---
 document.getElementById('download-btn').addEventListener('click', function() {
     const card = document.getElementById('capture-area');
     const btn = this;
@@ -131,12 +134,12 @@ document.getElementById('download-btn').addEventListener('click', function() {
 
     btn.innerText = "正在儲存...";
 
-    // 直接截取當前顯示的卡片，因為 CSS 已經強制鎖定 9:16，所以所見即所得
+    // 由於我們使用了 CSS background-size: cover，截圖引擎可以完美處理裁切，不會變形
     html2canvas(card, {
-        scale: 3, // 3倍縮放保證高畫質
+        scale: 3, // 高清輸出
         useCORS: true,
         allowTaint: true,
-        backgroundColor: "#fff", // 確保背景白
+        backgroundColor: "#fff",
     }).then(canvas => {
         const link = document.createElement('a');
         link.download = 'EDEN_Material_Issue_2026.png';
