@@ -42,10 +42,11 @@ body {
 .text-link:hover { border-bottom-color: var(--text-primary); }
 
 /* --- Main App Styles --- */
-.container { width: 100%; max-width: 500px; padding: 40px 20px; display: flex; flex-direction: column; gap: 40px; }
-.header { text-align: center; margin-bottom: 20px; }
+/* [修改] 容器最大寬度設為 450px，確保像手機版面 */
+.container { width: 100%; max-width: 450px; padding: 20px; display: flex; flex-direction: column; gap: 30px; align-items: center; } 
+.header { text-align: center; margin-bottom: 10px; width: 100%; }
 .brand { font-family: var(--font-sans); font-size: 0.8rem; letter-spacing: 3px; color: var(--text-secondary); }
-.upload-zone { height: 350px; border: 1px solid var(--accent-color); padding: 15px; cursor: pointer; transition: 0.3s; background: #fff; }
+.upload-zone { width: 100%; height: 350px; border: 1px solid var(--accent-color); padding: 15px; cursor: pointer; transition: 0.3s; background: #fff; box-sizing: border-box; }
 .upload-zone:hover { border-color: var(--text-primary); }
 .upload-frame { width: 100%; height: 100%; background: var(--bg-color); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
 .plus-icon { font-size: 3rem; font-weight: 100; color: var(--accent-color); margin-bottom: 20px; }
@@ -63,16 +64,18 @@ input[type="file"] { display: none; }
     position: relative;
     display: flex;
     flex-direction: column;
-    /* 這裡只設定最小高度，確保內容多時可以延伸 */
-    min-height: 700px; 
+    width: 100%;
+    /* [關鍵修改] 強制設定長寬比為 9:16 (IG限動尺寸)，所見即所得 */
+    aspect-ratio: 9/16; 
 }
 
 .cover-header { position: absolute; top: 25px; left: 25px; right: 25px; display: flex; justify-content: space-between; font-family: var(--font-sans); font-size: 0.65rem; color: rgba(255,255,255,0.8); z-index: 10; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 10px; }
 
-.cover-image-container { position: relative; width: 100%; height: 450px; overflow: hidden; }
+/* [修改] 照片區域高度改為百分比，配合 aspect-ratio 自動伸縮 */
+.cover-image-container { position: relative; width: 100%; height: 60%; overflow: hidden; }
 .cover-image-container img {
     width: 100%; height: 100%; object-fit: cover;
-    /* [重要] 統一使用全彩，僅微調對比增加質感，移除所有黑白設定 */
+    /* 全彩設定，微調對比 */
     filter: contrast(1.05) saturate(1.05);
 }
 
@@ -80,20 +83,24 @@ input[type="file"] { display: none; }
 .cover-title-en { position: absolute; bottom: 50px; left: 25px; font-family: var(--font-serif-en); font-size: 3.5rem; line-height: 1; color: #fff; margin: 0; font-style: italic; z-index: 5; }
 .cover-title-zh { position: absolute; bottom: 25px; left: 30px; font-size: 1.2rem; color: rgba(255,255,255,0.9); margin: 0; z-index: 5; font-weight: normal; }
 
-.editorial-content { padding: 35px 25px 25px 25px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; background: #fff; }
-.section-title { font-family: var(--font-sans); font-size: 0.6rem; letter-spacing: 2px; color: var(--text-secondary); text-transform: uppercase; margin: 0 0 15px 0; border-left: 2px solid var(--accent-color); padding-left: 10px; }
-.article-text { font-size: 0.9rem; line-height: 1.8; color: var(--text-primary); margin-bottom: 30px; text-align: justify; }
-.specs-container { display: flex; border-top: 1px solid var(--accent-color); padding-top: 20px; margin-bottom: 25px; }
+.editorial-content { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; background: #fff; }
+.analysis-body { margin-bottom: 10px; }
+.section-title { font-family: var(--font-sans); font-size: 0.6rem; letter-spacing: 2px; color: var(--text-secondary); text-transform: uppercase; margin: 0 0 10px 0; border-left: 2px solid var(--accent-color); padding-left: 10px; }
+/* [修改] 字體大小稍微縮小以適應固定比例 */
+.article-text { font-size: 0.85rem; line-height: 1.7; color: var(--text-primary); margin-bottom: 15px; text-align: justify; }
+
+.specs-container { display: flex; border-top: 1px solid var(--accent-color); padding-top: 15px; margin-bottom: 15px; }
 .spec-col { flex: 1; }
-.spec-label { display: block; font-family: var(--font-sans); font-size: 0.6rem; color: var(--text-secondary); letter-spacing: 1px; margin-bottom: 5px;}
-.spec-value { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-primary); }
+.spec-label { display: block; font-family: var(--font-sans); font-size: 0.6rem; color: var(--text-secondary); letter-spacing: 1px; margin-bottom: 3px;}
+.spec-value { display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-primary); }
+
 .palette-section { margin-bottom: 10px; }
-.color-chips { display: flex; gap: 10px; margin-top: 10px;}
-.chip { width: 35px; height: 35px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); }
+.color-chips { display: flex; gap: 8px; margin-top: 5px;}
+.chip { width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); }
 .cover-footer { border-top: 1px solid var(--accent-color); padding-top: 15px; text-align: center; }
 .signature { font-family: var(--font-serif-en); font-style: italic; font-size: 0.7rem; color: var(--text-secondary); }
 
-.action-panel { text-align: center; margin-top: 30px; }
+.action-panel { text-align: center; margin-top: 20px; width: 100%; }
 .cta-guide { font-size: 0.9rem; color: var(--text-primary); margin-bottom: 20px; }
 .cta-btn { display: block; background: var(--text-primary); color: var(--bg-color); text-decoration: none; padding: 20px; font-family: var(--font-sans); font-size: 0.9rem; letter-spacing: 2px; font-weight: 600; margin-bottom: 15px; transition: 0.3s; }
 .cta-btn:hover { background: #444; }
