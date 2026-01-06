@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDEN MATERIAL LAB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header class="header">
+            <div class="brand">EDEN // MATERIAL LAB</div>
+            <div class="status">SYS: READY</div>
+        </header>
+
+        <section id="upload-zone" class="upload-zone">
+            <div class="dashed-border">
+                <input type="file" id="imageInput" accept="image/*">
+                <p class="instruction">DRAG IMAGE OR CLICK TO IMPORT</p>
+                <p class="sub-instruction">Source: Natural Light (Recommeded)</p>
+            </div>
+        </section>
+
+        <div id="loader" class="loader hidden">
+            <div class="line-scan"></div>
+            <p>ANALYZING SURFACE TEXTURE...</p>
+            <p id="calc-text">R:0 G:0 B:0</p>
+        </div>
+
+        <section id="result-section" class="result-section hidden">
+            
+            <div class="material-card" id="capture-area">
+                <div class="card-header">
+                    <span>PROJECT: VISUAL_ID</span>
+                    <span>DATE: 2025.Q2</span>
+                </div>
+                
+                <div class="card-body">
+                    <div class="photo-preview">
+                        <img id="preview-img" src="" alt="User Scan">
+                        <div class="overlay-grid"></div>
+                    </div>
+                    
+                    <div class="data-panel">
+                        <div class="data-row">
+                            <span class="label">MATERIAL TYPE</span>
+                            <h2 id="material-type" class="highlight">ANALYZING...</h2>
+                        </div>
+                        <div class="data-row">
+                            <span class="label">LIGHTING REQ.</span>
+                            <span id="lighting-req">Calculating...</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="label">TEXTURE</span>
+                            <span id="texture-rec">Calculating...</span>
+                        </div>
+                        
+                        <div class="palette">
+                            <span class="label">PALETTE_RGB:</span>
+                            <div class="color-chips" id="color-chips"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <div class="barcode">||| |||| | ||||| EDEN LAB CERTIFIED</div>
+                </div>
+            </div>
+
+            <div class="action-panel">
+                <p class="analysis-summary" id="analysis-text">...</p>
+                <a href="https://www.instagram.com/" target="_blank" class="cta-btn">預約 EDEN 光影方案 (BOOK_SESSION)</a>
+                <button id="download-btn" class="secondary-btn">DOWNLOAD CERTIFICATE</button>
+            </div>
+
+        </section>
+    </div>
+
+    <canvas id="canvas" style="display:none;"></canvas>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
