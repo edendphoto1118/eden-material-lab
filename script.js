@@ -84,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const canvas = document.getElementById('canvas');
         if(!canvas) return { isWarm: true, lightnessLevel: "MED", isHard: false };
 
-        // [優化] 回應 F12 警告：設定 willReadFrequently: true 提升讀取效能
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
         const processSize = 200;
         canvas.width = processSize; canvas.height = processSize;
@@ -136,7 +135,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if(bgLayer) { bgLayer.style.backgroundImage = `url(${imgSrc})`; }
         
         let archetypes = {};
-        // 此處保留您原本的所有 archetypes 設定
         archetypes["WARM_LIGHT_SOFT"] = { en: "CREAM TRAVERTINE", zh: "米黃洞石", mat: "Travertine / Cashmere<span class='zh-sub'>洞石 / 羊絨</span>", light: "Diffused Warm 2700K<span class='zh-sub'>2700K 柔和漫射光</span>", desc: "你的氣質如同羅馬古建築中的米黃洞石，充滿古典與優雅的韻味。你的立面不需要過度修飾，柔和的漫射暖光最能襯托你細膩、溫潤的層次感。", cols: ['#F5F5DC', '#E6D8AD', '#C1B68F'] };
         archetypes["WARM_LIGHT_HARD"] = { en: "CHAMPAGNE MESH", zh: "香檳金屬網", mat: "Champagne Gold / Silk<span class='zh-sub'>香檳金 / 絲綢</span>", light: "Shimmering Light<span class='zh-sub'>微光閃爍</span>", desc: "你擁有精緻且帶有透亮感的現代奢華特質。如同建築立面上的香檳色金屬網，在光線下閃爍著微光。你需要帶有光澤感的材質來呼應你的高貴氣息。", cols: ['#F7E7CE', '#D4AF37', '#FFF8E7'] };
         archetypes["WARM_MED_SOFT"] = { en: "RAW TIMBER", zh: "溫潤原木", mat: "Raw Wood / Linen<span class='zh-sub'>原木 / 亞麻</span>", light: "Natural Sunlight<span class='zh-sub'>自然日照</span>", desc: "你的視覺基調如同未經大漆的原木，自帶一種有機、親和且療癒的敘事感。任何人工的過度拋光都會破壞你與生俱來的自然美，保持本真就是最高級。", cols: ['#C19A6B', '#8B5A2B', '#EADDCA'] };
@@ -165,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if(chips) { chips.innerHTML = ''; result.cols.forEach(c => { let div = document.createElement('div'); div.className = 'chip'; div.style.backgroundColor = c; chips.appendChild(div); }); }
     }
 
-    // --- 5. [效能與視覺優化版] 解決 F12 警告與霧化問題 ---
+    // --- 5. [全方位修復] 解決 CSS 載入失敗、黑白霧化與位移問題 ---
     if(downloadBtn) {
         downloadBtn.addEventListener('click', function() {
             const card = document.getElementById('capture-area');
@@ -174,44 +172,48 @@ document.addEventListener('DOMContentLoaded', function() {
 
             btn.innerText = "正在封裝...";
 
-            // 1. 確保座標與捲動正確
+            // 1. 強制重置視窗位置，確保截圖精準
             window.scrollTo(0, 0);
 
             // 2. 暫時關閉 3D 效果
             const originalTransform = card.style.transform;
             card.style.transform = 'none';
 
-            // 3. 執行 html2canvas
             html2canvas(card, {
-                scale: 3,                   // 保持高解析度
-                useCORS: true,              // 跨域圖片
+                scale: 3,                   // 高解析度
+                useCORS: true,              // 支援跨域圖片
                 allowTaint: false,
-                backgroundColor: null,      // 不補背景色，解決黑霧
+                backgroundColor: "#ffffff", // 強制設定白色背景，解決因為 CSS 載入失敗導致的黑霧
                 logging: false,
                 width: card.offsetWidth,
                 height: card.offsetHeight,
-                // [重點優化]：在克隆出的 DOM 中清除干擾
                 onclone: (clonedDoc) => {
                     const clonedCard = clonedDoc.getElementById('capture-area');
-                    clonedCard.style.transform = 'none';
                     
-                    // 強制移除所有毛玻璃與透明濾鏡層，回歸第一張圖的清晰度
-                    const toxicLayers = clonedCard.querySelectorAll('.texture-overlay, .mask-reveal, .image-layer');
-                    toxicLayers.forEach(layer => {
+                    // 3. 應對 F12 中的 CSS 載入失敗：手動注入關鍵樣式
+                    clonedCard.style.color = "#333";
+                    clonedCard.style.backgroundColor = "#fff";
+                    clonedCard.style.transform = 'none';
+                    clonedCard.style.boxShadow = 'none';
+
+                    // 4. 清除所有干擾截圖的濾鏡效果
+                    const overlayLayers = clonedCard.querySelectorAll('.texture-overlay, .mask-reveal, .image-layer, #preview-bg');
+                    overlayLayers.forEach(layer => {
                         layer.style.backdropFilter = 'none';
                         layer.style.webkitBackdropFilter = 'none';
                         layer.style.filter = 'none';
-                        // 確保層次不會變黑
+                        layer.style.opacity = '1';
+                        // 移除可能變黑的混合背景
                         if (layer.classList.contains('texture-overlay')) {
                             layer.style.backgroundColor = 'transparent';
                         }
                     });
                 }
             }).then(canvas => {
-                // 4. 匯出 PNG 
+                // 5. 匯出 PNG
                 const imageData = canvas.toDataURL("image/png");
                 const link = document.createElement('a');
-                link.download = `THE_FACADE_REPORT_${Date.now()}.png`;
+                link.download = `THE_FACADE_REPORT_FINAL.png`;
                 link.href = imageData;
                 link.click();
                 
@@ -220,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 card.style.transform = originalTransform;
 
             }).catch(err => {
-                console.error("截圖失敗:", err);
+                console.error("截圖錯誤:", err);
                 btn.innerText = "儲存失敗，請重試";
                 card.style.transform = originalTransform;
             });
