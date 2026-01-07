@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if(chips) { chips.innerHTML = ''; result.cols.forEach(c => { let div = document.createElement('div'); div.className = 'chip'; div.style.backgroundColor = c; chips.appendChild(div); }); }
     }
 
-    // --- 5. [重寫] 儲存功能：使用 onclone 技術解決霧化與變形 ---
+    // --- 5. [功能重寫] 儲存截圖邏輯 (JPG版) ---
     if(downloadBtn) {
         downloadBtn.addEventListener('click', function() {
             const card = document.getElementById('capture-area');
@@ -175,10 +175,11 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.innerText = "正在封裝...";
 
             html2canvas(card, {
-                scale: 2, // 使用穩定的 2 倍縮放
+                scale: 2, // 使用 2 倍縮放
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: "#fff",
+                // 使用 onclone 在截圖前「整容」
                 onclone: (documentClone) => {
                     const clone = documentClone.getElementById('capture-area');
                     
@@ -194,13 +195,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         texture.style.background = 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.6) 100%)'; 
                     }
 
-                    // 3. 解決 "Noise Fog" (雜點變白霧) - 直接隱藏
+                    // 3. 解決 "Noise Fog" (雜點變白霧)
                     const noise = clone.querySelector('.noise-overlay');
                     if (noise) {
                         noise.style.display = 'none';
                     }
 
-                    // 4. [新增] 移除照片濾鏡，確保不模糊
+                    // 4. 移除濾鏡
                     const imgLayer = clone.querySelector('.image-layer');
                     if(imgLayer) {
                         imgLayer.style.filter = 'none';
@@ -208,8 +209,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'EDEN_FACADE_REPORT_2026.png';
-                link.href = canvas.toDataURL("image/png");
+                // [修改] 檔名改成 .jpg
+                link.download = 'EDEN_FACADE_REPORT_2026.jpg'; 
+                // [修改] 格式改成 image/jpeg，品質 1.0
+                link.href = canvas.toDataURL("image/jpeg", 1.0); 
                 link.click();
                 
                 btn.innerText = "已保存至相簿 SAVED";
