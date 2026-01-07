@@ -165,91 +165,58 @@ document.addEventListener('DOMContentLoaded', function() {
         if(chips) { chips.innerHTML = ''; result.cols.forEach(c => { let div = document.createElement('div'); div.className = 'chip'; div.style.backgroundColor = c; chips.appendChild(div); }); }
     }
 
-    // --- 5. [功能重寫] 儲存截圖邏輯 ---
+    // --- 5. [重寫] 儲存功能：使用 onclone 技術解決霧化與變形 ---
     if(downloadBtn) {
         downloadBtn.addEventListener('click', function() {
             const card = document.getElementById('capture-area');
             const btn = this;
             const originalText = btn.innerText;
-            
-            // 抓取可能導致霧化的特效元素
-            const noise = document.querySelector('.noise-overlay');
-            const texture = document.querySelector('.texture-overlay');
-            const imgLayer = document.querySelector('.image-layer');
 
             btn.innerText = "正在封裝...";
 
-            // 【步驟一】 暫時關閉特效 (解決霧化問題的核心)
-            // 1. 隱藏雜點 (因為 mix-blend-mode: overlay 在截圖時會變灰霧)
-            if(noise) noise.style.display = 'none';
-            
-            // 2. 處理漸層層 (mix-blend-mode: multiply 在截圖時會變黑塊)
-            // 我們把混合模式關掉，改用普通的半透明黑來模擬
-            let originalTextureBlend = '';
-            if(texture) {
-                originalTextureBlend = texture.style.mixBlendMode;
-                texture.style.mixBlendMode = 'normal';
-                texture.style.opacity = '0.5'; // 用透明度模擬暗角
-            }
-
-            // 3. 移除照片濾鏡 (brightness/contrast 會導致截圖兩次運算而過曝)
-            let originalFilter = '';
-            if(imgLayer) {
-                originalFilter = imgLayer.style.filter;
-                imgLayer.style.filter = 'none'; 
-                imgLayer.style.opacity = '1';
-            }
-
-            // 4. 移除卡片 3D 變形 (確保截圖是正的)
-            const originalTransform = card.style.transform;
-            card.style.transform = 'none';
-            card.style.boxShadow = 'none';
-            card.style.margin = '0'; // 避免邊距導致偏移
-
-            // 【步驟二】 執行截圖
             html2canvas(card, {
-                useCORS: true, // 允許跨域
+                scale: 2, // 使用穩定的 2 倍縮放
+                useCORS: true,
                 allowTaint: true,
-                backgroundColor: "#fff", // 強制白底
-                // 移除 scale: 3，改用預設設備像素比，避免強制放大導致的運算錯誤
-                scale: window.devicePixelRatio || 2, 
-                width: 375, // 鎖定寬度
-                height: 667 // 鎖定高度
+                backgroundColor: "#fff",
+                onclone: (documentClone) => {
+                    const clone = documentClone.getElementById('capture-area');
+                    
+                    // 1. 強制重置變形與邊距
+                    clone.style.transform = 'none';
+                    clone.style.boxShadow = 'none';
+                    clone.style.margin = '0';
+
+                    // 2. 解決 "Texture Fog" (漸層變灰)
+                    const texture = clone.querySelector('.texture-overlay');
+                    if (texture) {
+                        texture.style.mixBlendMode = 'normal';
+                        texture.style.background = 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.6) 100%)'; 
+                    }
+
+                    // 3. 解決 "Noise Fog" (雜點變白霧) - 直接隱藏
+                    const noise = clone.querySelector('.noise-overlay');
+                    if (noise) {
+                        noise.style.display = 'none';
+                    }
+
+                    // 4. [新增] 移除照片濾鏡，確保不模糊
+                    const imgLayer = clone.querySelector('.image-layer');
+                    if(imgLayer) {
+                        imgLayer.style.filter = 'none';
+                    }
+                }
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = 'EDEN_FACADE_REPORT_2026.png';
                 link.href = canvas.toDataURL("image/png");
                 link.click();
                 
-                // 【步驟三】 狀態回饋
                 btn.innerText = "已保存至相簿 SAVED";
                 setTimeout(() => { btn.innerText = originalText; }, 3000);
-
-                // 【步驟四】 恢復特效 (讓網頁變回原樣)
-                if(noise) noise.style.display = 'block';
-                if(texture) {
-                    texture.style.mixBlendMode = originalTextureBlend || '';
-                    texture.style.opacity = '';
-                }
-                if(imgLayer) imgLayer.style.filter = originalFilter;
-                card.style.transform = originalTransform;
-                card.style.boxShadow = '';
-                card.style.margin = '';
-
             }).catch(err => {
                 console.error("截圖失敗:", err);
                 btn.innerText = "儲存失敗，請重試";
-                
-                // 失敗也要恢復特效
-                if(noise) noise.style.display = 'block';
-                if(texture) {
-                    texture.style.mixBlendMode = originalTextureBlend || '';
-                    texture.style.opacity = '';
-                }
-                if(imgLayer) imgLayer.style.filter = originalFilter;
-                card.style.transform = originalTransform;
-                card.style.boxShadow = '';
-                card.style.margin = '';
             });
         });
     }
