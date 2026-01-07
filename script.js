@@ -84,7 +84,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const canvas = document.getElementById('canvas');
         if(!canvas) return { isWarm: true, lightnessLevel: "MED", isHard: false };
 
-        const ctx = canvas.getContext('2d');
+        // [優化] 回應 F12 警告：設定 willReadFrequently: true 提升讀取效能
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
         const processSize = 200;
         canvas.width = processSize; canvas.height = processSize;
         const ratio = Math.max(processSize / img.width, processSize / img.height);
@@ -135,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if(bgLayer) { bgLayer.style.backgroundImage = `url(${imgSrc})`; }
         
         let archetypes = {};
+        // 此處保留您原本的所有 archetypes 設定
         archetypes["WARM_LIGHT_SOFT"] = { en: "CREAM TRAVERTINE", zh: "米黃洞石", mat: "Travertine / Cashmere<span class='zh-sub'>洞石 / 羊絨</span>", light: "Diffused Warm 2700K<span class='zh-sub'>2700K 柔和漫射光</span>", desc: "你的氣質如同羅馬古建築中的米黃洞石，充滿古典與優雅的韻味。你的立面不需要過度修飾，柔和的漫射暖光最能襯托你細膩、溫潤的層次感。", cols: ['#F5F5DC', '#E6D8AD', '#C1B68F'] };
         archetypes["WARM_LIGHT_HARD"] = { en: "CHAMPAGNE MESH", zh: "香檳金屬網", mat: "Champagne Gold / Silk<span class='zh-sub'>香檳金 / 絲綢</span>", light: "Shimmering Light<span class='zh-sub'>微光閃爍</span>", desc: "你擁有精緻且帶有透亮感的現代奢華特質。如同建築立面上的香檳色金屬網，在光線下閃爍著微光。你需要帶有光澤感的材質來呼應你的高貴氣息。", cols: ['#F7E7CE', '#D4AF37', '#FFF8E7'] };
         archetypes["WARM_MED_SOFT"] = { en: "RAW TIMBER", zh: "溫潤原木", mat: "Raw Wood / Linen<span class='zh-sub'>原木 / 亞麻</span>", light: "Natural Sunlight<span class='zh-sub'>自然日照</span>", desc: "你的視覺基調如同未經大漆的原木，自帶一種有機、親和且療癒的敘事感。任何人工的過度拋光都會破壞你與生俱來的自然美，保持本真就是最高級。", cols: ['#C19A6B', '#8B5A2B', '#EADDCA'] };
@@ -143,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
         archetypes["WARM_DARK_HARD"] = { en: "TITANIUM BRONZE", zh: "鈦古銅", mat: "Bronze / Velvet<span class='zh-sub'>鈦古銅 / 絲絨</span>", light: "Dramatic Hard Light<span class='zh-sub'>戲劇性硬光</span>", desc: "你對應的是頂級豪宅立面常用的鈦古銅。深邃、霸氣且極具權威感。你能夠駕馭極具戲劇性的光影，在黑暗中閃耀著沈穩的金屬光澤，氣場強大。", cols: ['#CD7F32', '#4B3621', '#B87333'] };
         archetypes["COOL_LIGHT_SOFT"] = { en: "FROSTED GLASS", zh: "霧面玻璃", mat: "Frosted Glass / Chiffon<span class='zh-sub'>霧面玻璃 / 雪紡</span>", light: "Soft White 4000K<span class='zh-sub'>4000K 柔和白光</span>", desc: "你的氣質空靈、通透，宛如美術館的霧面玻璃立面，將光線柔化成朦朧的詩意。你適合極度輕盈、半透明的材質，展現一種不沾世俗的仙氣。", cols: ['#E0FFFF', '#F0F8FF', '#B0E0E6'] };
         archetypes["COOL_LIGHT_HARD"] = { en: "CARRARA MARBLE", zh: "卡拉拉大理石", mat: "White Marble / Satin<span class='zh-sub'>大理石 / 緞面</span>", light: "Crisp Daylight<span class='zh-sub'>清冽日光</span>", desc: "你如同義大利卡拉拉大理石，白底中帶有清晰冷冽的灰紋。高貴、冷豔且條理分明。你需要乾淨銳利的光線來勾勒你精緻的線條，展現菁英般的距離感。", cols: ['#F2F3F4', '#D3D3D3', '#708090'] };
-        archetypes["COOL_MED_SOFT"] = { en: "FAIR-FACED CONCRETE", zh: "清水混凝土", mat: "Concrete / Cotton<span class='zh-sub'>清水模 / 純棉</span>", light: "Even Cool Light<span class='zh-sub'>勻淨冷光</span>", desc: "你的氣質極淨、克制，宛如安藤忠雄的清水模建築。摒棄一切多餘裝飾，追求本質的純粹。你適合極極簡剪裁與低飽和度的灰階色調，展現哲學般的冷靜。", cols: ['#D3D3D3', '#A9A9A9', '#778899'] };
+        archetypes["COOL_MED_SOFT"] = { en: "FAIR-FACED CONCRETE", zh: "清水混凝土", mat: "Concrete / Cotton<span class='zh-sub'>清水模 / 純棉</span>", light: "Even Cool Light<span class='zh-sub'>勻淨冷光</span>", desc: "你的氣質極淨、克制，宛如安藤忠雄的清水模建築。摒棄一切多餘裝飾，追求本質的純粹。你適合極簡剪裁與低飽和度的灰階色調，展現哲學般的冷靜。", cols: ['#D3D3D3', '#A9A9A9', '#778899'] };
         archetypes["COOL_MED_HARD"] = { en: "ANODIZED ALUMINUM", zh: "陽極鋁", mat: "Aluminum / Synthetic<span class='zh-sub'>陽極鋁 / 機能布料</span>", light: "Tech Cool<span class='zh-sub'>科技冷光</span>", desc: "你帶有強烈的未來主義與科技感，如同現代建築的陽極處理鋁板。理性、平滑且精準。你適合帶有光澤的科技布料或金屬配飾，展現前衛的時尚態度。", cols: ['#C0C0C0', '#E5E4E2', '#848482'] };
         archetypes["COOL_DARK_SOFT"] = { en: "BLUE SLATE", zh: "深藍板岩", mat: "Slate / Denim<span class='zh-sub'>板岩 / 丹寧</span>", light: "Dim Cool<span class='zh-sub'>微光冷調</span>", desc: "你的氣質內斂而神秘，如同深海般的藍灰色板岩。表面看似平靜，實則蘊含深沉的力量。你適合深色、粗糙質感的材質，在低調中展現不凡的品味。", cols: ['#2F4F4F', '#483D8B', '#36454F'] };
         archetypes["COOL_DARK_HARD"] = { en: "OBSIDIAN", zh: "黑曜岩", mat: "Black Glass / Leather<span class='zh-sub'>黑玻 / 皮革</span>", light: "High Contrast Spot<span class='zh-sub'>高反差點光</span>", desc: "你是黑夜中的王者，如同黑曜岩般銳利、漆黑且閃耀。極致的對比度是你最好的武器。大膽嘗試全黑造型與強烈的硬光，展現令人屏息的強大氣場。", cols: ['#000000', '#1C1C1C', '#2C3E50'] };
@@ -163,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if(chips) { chips.innerHTML = ''; result.cols.forEach(c => { let div = document.createElement('div'); div.className = 'chip'; div.style.backgroundColor = c; chips.appendChild(div); }); }
     }
 
-    // --- 5. [最終修復] 解決霧化與顏色偏差 ---
+    // --- 5. [效能與視覺優化版] 解決 F12 警告與霧化問題 ---
     if(downloadBtn) {
         downloadBtn.addEventListener('click', function() {
             const card = document.getElementById('capture-area');
@@ -172,52 +174,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
             btn.innerText = "正在封裝...";
 
-            // 確保回到頂部，避免偏移
+            // 1. 確保座標與捲動正確
             window.scrollTo(0, 0);
 
-            // 暫時移除卡片的 CSS 變形，確保截圖完整
+            // 2. 暫時關閉 3D 效果
             const originalTransform = card.style.transform;
             card.style.transform = 'none';
 
+            // 3. 執行 html2canvas
             html2canvas(card, {
-                scale: 3,                   // 提高解析度
-                useCORS: true,              // 跨域圖片支援
-                allowTaint: false,          // 必須為 false
-                backgroundColor: null,      // 設定為 null，不強加任何底色，保留原始設計
+                scale: 3,                   // 保持高解析度
+                useCORS: true,              // 跨域圖片
+                allowTaint: false,
+                backgroundColor: null,      // 不補背景色，解決黑霧
                 logging: false,
                 width: card.offsetWidth,
                 height: card.offsetHeight,
+                // [重點優化]：在克隆出的 DOM 中清除干擾
                 onclone: (clonedDoc) => {
-                    // [關鍵修復]：在克隆的畫面上操作，移除會導致霧化的 CSS 特效
                     const clonedCard = clonedDoc.getElementById('capture-area');
                     clonedCard.style.transform = 'none';
-                    clonedCard.style.boxShadow = 'none';
-
-                    // 強制關閉卡片中所有可能導致「白霧」或「黑霧」的濾鏡
-                    const toxicElements = clonedCard.querySelectorAll('.texture-overlay, .mask-reveal, .image-layer');
-                    toxicElements.forEach(el => {
-                        el.style.backdropFilter = 'none'; 
-                        el.style.webkitBackdropFilter = 'none';
-                        el.style.filter = 'none';
-                        // 如果背景色過暗導致「黑霧」，將其強制轉為透明
-                        if (el.classList.contains('texture-overlay')) {
-                            el.style.backgroundColor = 'transparent';
+                    
+                    // 強制移除所有毛玻璃與透明濾鏡層，回歸第一張圖的清晰度
+                    const toxicLayers = clonedCard.querySelectorAll('.texture-overlay, .mask-reveal, .image-layer');
+                    toxicLayers.forEach(layer => {
+                        layer.style.backdropFilter = 'none';
+                        layer.style.webkitBackdropFilter = 'none';
+                        layer.style.filter = 'none';
+                        // 確保層次不會變黑
+                        if (layer.classList.contains('texture-overlay')) {
+                            layer.style.backgroundColor = 'transparent';
                         }
                     });
                 }
             }).then(canvas => {
-                // 使用 PNG 格式以保留透明層級與真實色彩
+                // 4. 匯出 PNG 
                 const imageData = canvas.toDataURL("image/png");
-                
                 const link = document.createElement('a');
-                link.download = `EDEN_FACADE_REPORT_${Date.now()}.png`;
+                link.download = `THE_FACADE_REPORT_${Date.now()}.png`;
                 link.href = imageData;
                 link.click();
                 
                 btn.innerText = "已保存至相簿 SAVED";
                 setTimeout(() => { btn.innerText = originalText; }, 3000);
-
-                // 恢復網頁視覺效果
                 card.style.transform = originalTransform;
 
             }).catch(err => {
