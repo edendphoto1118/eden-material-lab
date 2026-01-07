@@ -69,7 +69,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         resultSection.classList.remove('hidden');
                         setTimeout(() => {
                             resultSection.classList.add('animate-in');
-                            // [修正] 移除 developed 類別控制，因為已無 filter
                         }, 100);
                         resultSection.scrollIntoView({ behavior: 'smooth' });
                     }
@@ -164,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if(chips) { chips.innerHTML = ''; result.cols.forEach(c => { let div = document.createElement('div'); div.className = 'chip'; div.style.backgroundColor = c; chips.appendChild(div); }); }
     }
 
-    // --- 5. [修正] 極簡化截圖功能 (無特效干擾) ---
+    // --- 5. [修正完成] 解決白色霧化、偏移與解析度問題 ---
     if(downloadBtn) {
         downloadBtn.addEventListener('click', function() {
             const card = document.getElementById('capture-area');
@@ -173,37 +172,46 @@ document.addEventListener('DOMContentLoaded', function() {
 
             btn.innerText = "正在封裝...";
 
-            // 暫時移除卡片的 3D 變形，確保截圖平整
+            // 1. 強制讓卡片暫時回到平整狀態，避免 3D 效果導致截圖殘缺或變形
             const originalTransform = card.style.transform;
+            const originalMargin = card.style.margin;
             card.style.transform = 'none';
-            card.style.boxShadow = 'none';
-            card.style.margin = '0'; // 避免邊距導致偏移
+            card.style.margin = '0';
+            
+            // 2. 確保捲動軸不會影響截圖區域
+            window.scrollTo(0, 0);
 
             html2canvas(card, {
-                scale: 2, // 2倍縮放，夠清晰且檔案不會太大
-                useCORS: true,
-                allowTaint: true,
-                backgroundColor: "#fff",
+                scale: 3,                 // 提高清晰度 (3倍)
+                useCORS: true,            // 允許跨域圖片 (非常重要)
+                allowTaint: false,        // 必須為 false，否則匯出會變空白
+                backgroundColor: "#000000", // 設定卡片底色預設為黑（或根據你的設計）
+                logging: false,
+                width: card.offsetWidth,
+                height: card.offsetHeight,
+                scrollX: 0,
+                scrollY: -window.scrollY  // 修正捲動偏移問題
             }).then(canvas => {
+                // 3. 轉成 PNG 導出，解決 JPEG 可能出現的白霧問題
+                const imageData = canvas.toDataURL("image/png");
+                
                 const link = document.createElement('a');
-                link.download = 'EDEN_FACADE_REPORT_2026.jpg'; // 使用 jpg
-                link.href = canvas.toDataURL("image/jpeg", 1.0); // 品質 1.0
+                link.download = `THE_FACADE_REPORT_${Date.now()}.png`;
+                link.href = imageData;
                 link.click();
                 
                 btn.innerText = "已保存至相簿 SAVED";
                 setTimeout(() => { btn.innerText = originalText; }, 3000);
 
-                // 恢復 3D 變形
+                // 4. 恢復卡片網頁上的視覺效果
                 card.style.transform = originalTransform;
-                card.style.boxShadow = '';
-                card.style.margin = '';
+                card.style.margin = originalMargin;
 
             }).catch(err => {
                 console.error("截圖失敗:", err);
                 btn.innerText = "儲存失敗，請重試";
                 card.style.transform = originalTransform;
-                card.style.boxShadow = '';
-                card.style.margin = '';
+                card.style.margin = originalMargin;
             });
         });
     }
