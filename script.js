@@ -69,6 +69,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         resultSection.classList.remove('hidden');
                         setTimeout(() => {
                             resultSection.classList.add('animate-in');
+                            const layer = document.querySelector('.image-layer');
+                            if(layer) layer.classList.add('developed');
                         }, 100);
                         resultSection.scrollIntoView({ behavior: 'smooth' });
                     }
@@ -163,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if(chips) { chips.innerHTML = ''; result.cols.forEach(c => { let div = document.createElement('div'); div.className = 'chip'; div.style.backgroundColor = c; chips.appendChild(div); }); }
     }
 
-    // --- 5. 截圖功能 (無濾鏡版) ---
+    // --- 5. 儲存功能 (穩定版) ---
     if(downloadBtn) {
         downloadBtn.addEventListener('click', function() {
             const card = document.getElementById('capture-area');
@@ -172,37 +174,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
             btn.innerText = "正在封裝...";
 
-            // 暫時移除卡片的 3D 變形，確保截圖平整
-            const originalTransform = card.style.transform;
-            card.style.transform = 'none';
-            card.style.boxShadow = 'none';
-            card.style.margin = '0';
-
             html2canvas(card, {
-                scale: 2, // 2倍縮放，畫質適中
+                scale: 2, // 2倍縮放，穩定清晰
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: "#fff",
             }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'EDEN_FACADE_REPORT_2026.jpg'; // JPG
+                link.download = 'EDEN_FACADE_REPORT_2026.jpg'; // 下載 JPG
                 link.href = canvas.toDataURL("image/jpeg", 1.0); // 品質 1.0
                 link.click();
                 
                 btn.innerText = "已保存至相簿 SAVED";
                 setTimeout(() => { btn.innerText = originalText; }, 3000);
-
-                // 恢復 3D 變形
-                card.style.transform = originalTransform;
-                card.style.boxShadow = '';
-                card.style.margin = '';
-
             }).catch(err => {
                 console.error("截圖失敗:", err);
                 btn.innerText = "儲存失敗，請重試";
-                card.style.transform = originalTransform;
-                card.style.boxShadow = '';
-                card.style.margin = '';
             });
         });
     }
