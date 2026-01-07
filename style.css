@@ -22,7 +22,7 @@ body {
     line-height: 1.6;
 }
 
-/* --- Lock Screen --- */
+/* Lock Screen */
 .lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-color); z-index: 999; display: flex; align-items: center; justify-content: center; text-align: center; padding: 30px; }
 .masthead { font-family: var(--font-vogue); font-size: 4.5rem; font-weight: 700; letter-spacing: 0.2em; margin-bottom: 5px; color: var(--text-primary); line-height: 1; }
 .issue-no { font-family: var(--font-sans); font-size: 0.7rem; letter-spacing: 2px; color: var(--text-secondary); margin-bottom: 50px; text-transform: uppercase; }
@@ -38,7 +38,7 @@ body {
 .text-link { color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--accent-color); margin-left: 10px; padding-bottom: 2px; transition: 0.3s;}
 .text-link:hover { border-bottom-color: var(--text-primary); }
 
-/* --- Main App Styles --- */
+/* Main App */
 .container { width: 100%; padding: 20px 0; display: flex; flex-direction: column; gap: 30px; align-items: center; overflow-x: hidden; } 
 .header { text-align: center; margin-bottom: 10px; width: 100%; }
 .brand { font-family: var(--font-vogue); font-size: 0.9rem; letter-spacing: 2px; color: var(--text-primary); font-weight: 700; }
@@ -58,7 +58,7 @@ input[type="file"] { display: none; }
 .loading-progress { position: absolute; left: 0; top: 0; height: 100%; width: 30%; background: var(--text-primary); animation: progress-bar 1.5s infinite ease-in-out; }
 @keyframes progress-bar { 0% { left: -30%; } 100% { left: 100%; } }
 
-/* --- THE MAGAZINE COVER --- */
+/* Magazine Cover */
 .magazine-cover-wrapper { perspective: 1000px; opacity: 0; display: flex; justify-content: center; }
 .magazine-cover {
     background: #fff; padding: 0; border: none;
@@ -68,21 +68,21 @@ input[type="file"] { display: none; }
     transform: scale(1.03); transform-origin: center bottom;
 }
 
-/* [修正] 移除 .noise-overlay，移除所有 filter，確保截圖一致性 */
-
 .cover-header { position: absolute; top: 25px; left: 25px; right: 25px; display: flex; justify-content: space-between; font-family: var(--font-sans); font-size: 0.6rem; color: rgba(255,255,255,0.9); z-index: 10; letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.4); padding-bottom: 12px; font-weight: 600; }
 .cover-image-container { position: relative; width: 100%; height: 62%; overflow: hidden; background: #e0e0e0; }
 
+/* [乾淨版] 沒有 filter，就是原圖 */
 .image-layer { 
     width: 100%; height: 100%; 
     background-size: cover; background-position: center center; background-repeat: no-repeat; 
-    /* 移除 filter 確保所見即所得 */
+    transition: filter 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
 }
+.image-layer.developed { } /* 移除顯影變色，只保留結構 */
 
-/* [修正] 移除 mix-blend-mode，改用標準 CSS 漸層 */
+/* [乾淨版] 沒有混合模式，只有半透明漸層 */
 .texture-overlay { 
     position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-    background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.65) 100%); 
+    background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.6) 100%); 
     pointer-events: none; 
 }
 
@@ -107,7 +107,7 @@ input[type="file"] { display: none; }
 .cover-footer { border-top: 1px solid var(--accent-color); padding-top: 15px; text-align: center; }
 .signature { font-family: var(--font-vogue); font-style: italic; font-size: 0.75rem; color: var(--text-secondary); letter-spacing: 1px; }
 
-/* Action Panel 強制置中 */
+/* Action Panel (置中) */
 .action-panel {
     width: 100%;
     display: flex;
@@ -128,44 +128,21 @@ input[type="file"] { display: none; }
 }
 
 .cta-btn { 
-    display: block; 
-    width: 100%; 
-    max-width: 375px; 
-    background: var(--text-primary); 
-    color: var(--bg-color); 
-    border: 1px solid var(--text-primary); 
-    text-decoration: none; 
-    padding: 18px; 
-    font-family: var(--font-sans); 
-    font-size: 0.85rem; 
-    letter-spacing: 2px; 
-    font-weight: 600; 
-    margin-bottom: 12px; 
-    transition: 0.3s; 
-    text-transform: uppercase; 
-    cursor: pointer;
-    box-sizing: border-box; 
-    text-align: center;
+    display: block; width: 100%; max-width: 375px; 
+    background: var(--text-primary); color: var(--bg-color); border: 1px solid var(--text-primary); 
+    text-decoration: none; padding: 18px; 
+    font-family: var(--font-sans); font-size: 0.85rem; letter-spacing: 2px; font-weight: 600; 
+    margin-bottom: 12px; transition: 0.3s; text-transform: uppercase; cursor: pointer; 
+    box-sizing: border-box; text-align: center;
 }
 .cta-btn:hover { background: #333; border-color: #333; }
 
 .secondary-btn { 
-    display: block; 
-    width: 100%; 
-    max-width: 375px; 
-    background: transparent; 
-    border: 1px solid var(--text-primary); 
-    color: var(--text-primary); 
-    padding: 18px; 
-    text-decoration: none; 
-    font-family: var(--font-sans); 
-    font-size: 0.8rem; 
-    letter-spacing: 2px; 
-    cursor: pointer; 
-    transition: 0.3s; 
-    text-transform: uppercase; 
-    box-sizing: border-box; 
-    text-align: center;
+    display: block; width: 100%; max-width: 375px; 
+    background: transparent; border: 1px solid var(--text-primary); color: var(--text-primary); 
+    padding: 18px; text-decoration: none; 
+    font-family: var(--font-sans); font-size: 0.8rem; letter-spacing: 2px; cursor: pointer; 
+    transition: 0.3s; text-transform: uppercase; box-sizing: border-box; text-align: center;
 }
 .secondary-btn:hover { background: var(--text-primary); color: var(--bg-color); }
 
