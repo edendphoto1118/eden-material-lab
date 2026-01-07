@@ -22,7 +22,7 @@ body {
     line-height: 1.6;
 }
 
-/* Lock Screen */
+/* --- Lock Screen --- */
 .lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-color); z-index: 999; display: flex; align-items: center; justify-content: center; text-align: center; padding: 30px; }
 .masthead { font-family: var(--font-vogue); font-size: 4.5rem; font-weight: 700; letter-spacing: 0.2em; margin-bottom: 5px; color: var(--text-primary); line-height: 1; }
 .issue-no { font-family: var(--font-sans); font-size: 0.7rem; letter-spacing: 2px; color: var(--text-secondary); margin-bottom: 50px; text-transform: uppercase; }
@@ -38,7 +38,7 @@ body {
 .text-link { color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--accent-color); margin-left: 10px; padding-bottom: 2px; transition: 0.3s;}
 .text-link:hover { border-bottom-color: var(--text-primary); }
 
-/* Main App */
+/* --- Main App Styles --- */
 .container { width: 100%; padding: 20px 0; display: flex; flex-direction: column; gap: 30px; align-items: center; overflow-x: hidden; } 
 .header { text-align: center; margin-bottom: 10px; width: 100%; }
 .brand { font-family: var(--font-vogue); font-size: 0.9rem; letter-spacing: 2px; color: var(--text-primary); font-weight: 700; }
@@ -58,8 +58,8 @@ input[type="file"] { display: none; }
 .loading-progress { position: absolute; left: 0; top: 0; height: 100%; width: 30%; background: var(--text-primary); animation: progress-bar 1.5s infinite ease-in-out; }
 @keyframes progress-bar { 0% { left: -30%; } 100% { left: 100%; } }
 
-/* Magazine Cover */
-.magazine-cover-wrapper { perspective: 1000px; opacity: 0; display: flex; justify-content: center; } /* 確保 Wrapper 本身置中 */
+/* --- THE MAGAZINE COVER --- */
+.magazine-cover-wrapper { perspective: 1000px; opacity: 0; display: flex; justify-content: center; }
 .magazine-cover {
     background: #fff; padding: 0; border: none;
     box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1), 0 4px 10px -5px rgba(0,0,0,0.05);
@@ -97,12 +97,12 @@ input[type="file"] { display: none; }
 .cover-footer { border-top: 1px solid var(--accent-color); padding-top: 15px; text-align: center; }
 .signature { font-family: var(--font-vogue); font-style: italic; font-size: 0.75rem; color: var(--text-secondary); letter-spacing: 1px; }
 
-/* [修正] Action Panel 強制置中設定 */
+/* Action Panel 強制置中 */
 .action-panel {
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center; /* 子元素水平置中 */
+    align-items: center;
     margin-top: 25px;
     opacity: 0;
     transition: opacity 1s ease 1.5s;
@@ -120,7 +120,7 @@ input[type="file"] { display: none; }
 .cta-btn { 
     display: block; 
     width: 100%; 
-    max-width: 375px; /* 限制按鈕最大寬度 */
+    max-width: 375px; 
     background: var(--text-primary); 
     color: var(--bg-color); 
     border: 1px solid var(--text-primary); 
@@ -142,7 +142,7 @@ input[type="file"] { display: none; }
 .secondary-btn { 
     display: block; 
     width: 100%; 
-    max-width: 375px; /* 限制按鈕最大寬度 */
+    max-width: 375px; 
     background: transparent; 
     border: 1px solid var(--text-primary); 
     color: var(--text-primary); 
