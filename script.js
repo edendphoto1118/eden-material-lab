@@ -69,8 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         resultSection.classList.remove('hidden');
                         setTimeout(() => {
                             resultSection.classList.add('animate-in');
-                            const layer = document.querySelector('.image-layer');
-                            if(layer) layer.classList.add('developed');
+                            // [修正] 移除 developed 類別控制，因為已無 filter
                         }, 100);
                         resultSection.scrollIntoView({ behavior: 'smooth' });
                     }
@@ -134,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function renderResult(data, imgSrc) {
         const bgLayer = document.getElementById('preview-bg');
-        if(bgLayer) { bgLayer.classList.remove('developed'); bgLayer.style.backgroundImage = `url(${imgSrc})`; }
+        if(bgLayer) { bgLayer.style.backgroundImage = `url(${imgSrc})`; }
         
         let archetypes = {};
         archetypes["WARM_LIGHT_SOFT"] = { en: "CREAM TRAVERTINE", zh: "米黃洞石", mat: "Travertine / Cashmere<span class='zh-sub'>洞石 / 羊絨</span>", light: "Diffused Warm 2700K<span class='zh-sub'>2700K 柔和漫射光</span>", desc: "你的氣質如同羅馬古建築中的米黃洞石，充滿古典與優雅的韻味。你的立面不需要過度修飾，柔和的漫射暖光最能襯托你細膩、溫潤的層次感。", cols: ['#F5F5DC', '#E6D8AD', '#C1B68F'] };
@@ -165,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if(chips) { chips.innerHTML = ''; result.cols.forEach(c => { let div = document.createElement('div'); div.className = 'chip'; div.style.backgroundColor = c; chips.appendChild(div); }); }
     }
 
-    // --- 5. [功能重寫] 儲存截圖邏輯 (JPG版) ---
+    // --- 5. [修正] 極簡化截圖功能 (無特效干擾) ---
     if(downloadBtn) {
         downloadBtn.addEventListener('click', function() {
             const card = document.getElementById('capture-area');
@@ -174,52 +173,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
             btn.innerText = "正在封裝...";
 
+            // 暫時移除卡片的 3D 變形，確保截圖平整
+            const originalTransform = card.style.transform;
+            card.style.transform = 'none';
+            card.style.boxShadow = 'none';
+            card.style.margin = '0'; // 避免邊距導致偏移
+
             html2canvas(card, {
-                scale: 2, // 使用 2 倍縮放
+                scale: 2, // 2倍縮放，夠清晰且檔案不會太大
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: "#fff",
-                // 使用 onclone 在截圖前「整容」
-                onclone: (documentClone) => {
-                    const clone = documentClone.getElementById('capture-area');
-                    
-                    // 1. 強制重置變形與邊距
-                    clone.style.transform = 'none';
-                    clone.style.boxShadow = 'none';
-                    clone.style.margin = '0';
-
-                    // 2. 解決 "Texture Fog" (漸層變灰)
-                    const texture = clone.querySelector('.texture-overlay');
-                    if (texture) {
-                        texture.style.mixBlendMode = 'normal';
-                        texture.style.background = 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.6) 100%)'; 
-                    }
-
-                    // 3. 解決 "Noise Fog" (雜點變白霧)
-                    const noise = clone.querySelector('.noise-overlay');
-                    if (noise) {
-                        noise.style.display = 'none';
-                    }
-
-                    // 4. 移除濾鏡
-                    const imgLayer = clone.querySelector('.image-layer');
-                    if(imgLayer) {
-                        imgLayer.style.filter = 'none';
-                    }
-                }
             }).then(canvas => {
                 const link = document.createElement('a');
-                // [修改] 檔名改成 .jpg
-                link.download = 'EDEN_FACADE_REPORT_2026.jpg'; 
-                // [修改] 格式改成 image/jpeg，品質 1.0
-                link.href = canvas.toDataURL("image/jpeg", 1.0); 
+                link.download = 'EDEN_FACADE_REPORT_2026.jpg'; // 使用 jpg
+                link.href = canvas.toDataURL("image/jpeg", 1.0); // 品質 1.0
                 link.click();
                 
                 btn.innerText = "已保存至相簿 SAVED";
                 setTimeout(() => { btn.innerText = originalText; }, 3000);
+
+                // 恢復 3D 變形
+                card.style.transform = originalTransform;
+                card.style.boxShadow = '';
+                card.style.margin = '';
+
             }).catch(err => {
                 console.error("截圖失敗:", err);
                 btn.innerText = "儲存失敗，請重試";
+                card.style.transform = originalTransform;
+                card.style.boxShadow = '';
+                card.style.margin = '';
             });
         });
     }
