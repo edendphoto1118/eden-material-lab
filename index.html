@@ -56,7 +56,6 @@
             
             <div class="magazine-cover-wrapper">
                 <div class="magazine-cover" id="capture-area">
-                    <div class="noise-overlay"></div>
                     <div class="cover-header">
                         <span>THE FACADE REPORT</span>
                         <span>#2026_MQ2</span>
@@ -65,6 +64,7 @@
                     <div class="cover-image-container">
                         <div id="preview-bg" class="image-layer"></div>
                         <div class="texture-overlay"></div>
+                        
                         <div class="mask-reveal">
                             <h2 id="material-type-en" class="cover-title-en">ANALYZING</h2>
                         </div>
@@ -114,14 +114,6 @@
     </div>
 
     <canvas id="canvas" style="display:none;"></canvas>
-    <svg xmlns="http://www.w3.org/2000/svg" class="hidden-svg">
-        <filter id="noiseFilter">
-            <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch" result="noise"/>
-            <feColorMatrix in="noise" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.5 0" result="coloredNoise"/>
-            <feComposite operator="in" in2="SourceGraphic" in="coloredNoise" result="compositeNoise"/>
-        </filter>
-    </svg>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
