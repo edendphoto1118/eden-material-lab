@@ -3,118 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THE FACADE REPORT | 結構視角分析</title>
+    <title>THE FACADE REPORT | EDEN D.</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600;6..96,700&family=Noto+Serif+TC:wght@300;400;600&family=Helvetica+Neue:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600;6..96,700&family=Noto+Serif+TC:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
 <body>
-
     <div id="lock-screen" class="lock-screen">
         <div class="lock-content">
-            <div class="masthead">EDEN</div>
-            <p class="issue-no">ISSUE 2026. MATERIAL ADVISORY</p>
-            <h1 class="lock-title">THE FACADE REPORT</h1>
-            
-            <div class="input-group">
-                <input type="text" id="access-code" placeholder="請輸入邀請碼" autocomplete="off">
-                <button id="enter-btn" class="primary-btn">進入解讀</button>
-            </div>
-            
+            <h1>THE FACADE REPORT</h1>
+            <p>ENTER ACCESS CODE</p>
+            <input type="text" id="access-code" placeholder="邀請碼" autocomplete="off">
+            <button id="enter-btn">ENTER</button>
             <p id="error-msg" class="error-msg"></p>
-
-            <div class="lock-footer">
-                <span>尚未持有邀請碼？</span>
-                <a href="https://www.instagram.com/eden_d_photo/" target="_blank" class="text-link">私訊 Instagram 獲取</a>
-            </div>
         </div>
     </div>
 
     <div id="app-container" class="container hidden">
-        <header class="header">
-            <div class="brand">THE FACADE REPORT</div>
+        <header>
+            <div class="logo">THE FACADE REPORT</div>
+            <div class="issue">#2026_MQ2</div>
         </header>
 
-        <section id="upload-zone" class="upload-zone">
-            <div class="upload-frame">
-                <input type="file" id="imageInput" accept="image/*">
-                <span class="plus-icon">+</span>
-                <p class="instruction">載入個人肖像</p>
-                <p class="sub-instruction">建議使用臉部置中、光線自然的半身照<br>以獲得最佳視覺效果與分析精準度</p>
+        <main>
+            <div id="upload-zone" class="upload-zone">
+                <div class="plus-icon">+</div>
+                <p>UPLOAD PORTRAIT</p>
+                <span>點擊上傳面部立面照片</span>
+                <input type="file" id="imageInput" accept="image/*" hidden>
             </div>
-        </section>
 
-        <div id="loader" class="loader hidden">
-            <div class="loading-text-container">
-                <p id="loading-text" class="loading-text">CALCULATING SURFACE GEOMETRY...</p>
+            <div id="loader" class="loader hidden">
+                <div class="scan-line"></div>
+                <p id="loading-text">ANALYZING FACADE...</p>
             </div>
-            <div class="loading-bar"><div class="loading-progress"></div></div>
-        </div>
 
-        <section id="result-section" class="result-section hidden">
-            
-            <div class="magazine-cover-wrapper">
-                <div class="magazine-cover" id="capture-area">
-                    <div class="cover-header">
-                        <span>THE FACADE REPORT</span>
-                        <span>#2026_MQ2</span>
+            <div id="result-section" class="result-section hidden">
+                <div id="capture-area" class="card">
+                    <div class="card-header">
+                        <span class="tag">THE FACADE REPORT</span>
+                        <span class="tag">#2026_MQ2</span>
                     </div>
                     
-                    <div class="cover-image-container">
-                        <div id="preview-bg" class="image-layer"></div>
+                    <div class="image-container">
+                        <div id="preview-bg" class="preview-bg"></div>
                         <div class="texture-overlay"></div>
-                        
-                        <div class="mask-reveal">
-                            <h2 id="material-type-en" class="cover-title-en">ANALYZING</h2>
+                        <div class="title-overlay">
+                            <h2 id="material-type-en">MATERIAL</h2>
+                            <h3 id="material-type-zh">材質原型</h3>
                         </div>
-                        <div class="mask-reveal delay-1">
-                            <h3 id="material-type-zh" class="cover-title-zh">解構中</h3>
+                    </div>
+
+                    <div class="analysis-box">
+                        <div class="divider"></div>
+                        <p class="label">解析結果 / ANALYSIS RESULT</p>
+                        <p id="analysis-text" class="content-text">正在分析您的立面特質...</p>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <p class="label">建議光源 / LIGHTING</p>
+                                <p id="lighting-req" class="value">Loading...</p>
+                            </div>
+                            <div class="detail-item">
+                                <p class="label">適合材質 / TEXTURE</p>
+                                <p id="texture-rec" class="value">Loading...</p>
+                            </div>
                         </div>
+                        <p class="label">專屬色號 / PALETTE</p>
+                        <div id="color-chips" class="palette">
+                            </div>
                     </div>
                     
-                    <div class="editorial-content">
-                        <div class="analysis-body">
-                            <h4 class="section-title mask-reveal delay-2">解析結果 / ANALYSIS RESULT</h4>
-                            <div class="mask-reveal delay-3">
-                                <p id="analysis-text" class="article-text">...</p>
-                            </div>
-                        </div>
-
-                        <div class="specs-container mask-reveal delay-4">
-                            <div class="spec-col">
-                                <span class="spec-label">建議光源 / LIGHTING</span>
-                                <span id="lighting-req" class="spec-value">...</span>
-                            </div>
-                            <div class="spec-col">
-                                <span class="spec-label">適合材質 / TEXTURE</span>
-                                <span id="texture-rec" class="spec-value">...</span>
-                            </div>
-                        </div>
-                            
-                        <div class="palette-section mask-reveal delay-5">
-                            <span class="spec-label">專屬色號 / PALETTE</span>
-                            <div class="color-chips" id="color-chips"></div>
-                        </div>
-                    </div>
-
-                    <div class="cover-footer">
-                        <div class="signature">Visual Direction by EDEN D.</div>
+                    <div class="card-footer">
+                        Visual Direction by EDEN D.
                     </div>
                 </div>
-            </div>
 
-            <div class="action-panel">
-                <p class="cta-guide">分享給好友</p>
-                <button id="download-btn" class="cta-btn">收藏我的專屬期刊 DOWNLOAD</button>
-                <a href="https://www.instagram.com/eden_d_photo/" target="_blank" class="secondary-btn">私訊截圖兌換限定拍攝禮遇 CLAIM PERK</a>
+                <button id="download-btn" class="download-btn">SAVE TO ALBUM / 保存報告</button>
             </div>
-
-        </section>
+        </main>
     </div>
 
     <canvas id="canvas" style="display:none;"></canvas>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
     <script src="script.js"></script>
 </body>
 </html>
