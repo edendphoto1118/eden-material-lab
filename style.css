@@ -58,31 +58,37 @@ input[type="file"] { display: none; }
 .loading-progress { position: absolute; left: 0; top: 0; height: 100%; width: 30%; background: var(--text-primary); animation: progress-bar 1.5s infinite ease-in-out; }
 @keyframes progress-bar { 0% { left: -30%; } 100% { left: 100%; } }
 
-/* Magazine Cover */
-.magazine-cover-wrapper { perspective: 1000px; opacity: 0; display: flex; justify-content: center; }
+/* Magazine Cover - [移除 3D 變形] */
+.magazine-cover-wrapper { 
+    opacity: 0; 
+    display: flex; justify-content: center; 
+    /* 移除 perspective 以免影響截圖 */
+}
 .magazine-cover {
     background: #fff; padding: 0; border: none;
     box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1), 0 4px 10px -5px rgba(0,0,0,0.05);
     overflow: hidden; position: relative; display: flex; flex-direction: column;
     width: 375px; height: 667px; min-width: 375px; min-height: 667px;
-    transform: scale(1.03); transform-origin: center bottom;
+    /* 移除 scale(1.03)，保持 1:1 */
+    transform-origin: center bottom;
 }
 
 .cover-header { position: absolute; top: 25px; left: 25px; right: 25px; display: flex; justify-content: space-between; font-family: var(--font-sans); font-size: 0.6rem; color: rgba(255,255,255,0.9); z-index: 10; letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.4); padding-bottom: 12px; font-weight: 600; }
 .cover-image-container { position: relative; width: 100%; height: 62%; overflow: hidden; background: #e0e0e0; }
 
-/* [乾淨版] 沒有 filter，就是原圖 */
+/* [乾淨] 移除 filter */
 .image-layer { 
     width: 100%; height: 100%; 
     background-size: cover; background-position: center center; background-repeat: no-repeat; 
-    transition: filter 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+    transition: opacity 1s ease;
+    opacity: 0; /* 進場前隱藏 */
 }
-.image-layer.developed { } /* 移除顯影變色，只保留結構 */
+.image-layer.developed { opacity: 1; }
 
-/* [乾淨版] 沒有混合模式，只有半透明漸層 */
+/* [乾淨] 移除 mix-blend-mode */
 .texture-overlay { 
     position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-    background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.6) 100%); 
+    background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.65) 100%); 
     pointer-events: none; 
 }
 
@@ -148,11 +154,15 @@ input[type="file"] { display: none; }
 
 .hidden { display: none !important; }
 
-/* Animation */
+/* Animation - [移除所有 3D scale] */
 .animate-in .magazine-cover-wrapper { opacity: 1; }
-.animate-in .magazine-cover { animation: paper-land 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+/* 改為單純的透明度變化，移除 paper-land 3D 動畫 */
+.animate-in .magazine-cover { 
+    opacity: 1; 
+    transform: translateY(0);
+    transition: opacity 1s ease, transform 1s ease;
+}
 .animate-in .cover-title-en, .animate-in .cover-title-zh, .animate-in .section-title, .animate-in .article-text { transform: translateY(0); }
 .animate-in .specs-container, .animate-in .palette-section { transform: translateY(0); opacity: 1; }
 .animate-in .action-panel { opacity: 1; }
 .delay-1 * { transition-delay: 0.1s; } .delay-2 * { transition-delay: 0.2s; } .delay-3 * { transition-delay: 0.3s; } .delay-4 { transition-delay: 0.5s; } .delay-5 { transition-delay: 0.6s; }
-@keyframes paper-land { 0% { transform: scale(1.05) translateY(20px); opacity: 0; box-shadow: 0 20px 40px rgba(0,0,0,0.2); } 100% { transform: scale(1) translateY(0); opacity: 1; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1), 0 4px 10px -5px rgba(0,0,0,0.05); } }
