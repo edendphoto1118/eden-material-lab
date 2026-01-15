@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EDEN ROOM</title>
+    <title>CHROMA | EDEN LAB</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Space+Mono:ital,wght@0,300;0,400;1,300&family=Shippori+Mincho:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Shippori+Mincho:wght@400;500;600&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -17,14 +16,7 @@
                         mono: ['Space Mono', 'monospace'],
                         zh: ['Shippori Mincho', 'serif'] 
                     },
-                    colors: { 
-                        eden: { 
-                            black: '#020202', 
-                            gold: '#C5A059', 
-                            gray: '#1a1a1a', 
-                            text: '#888888'
-                        } 
-                    },
+                    colors: { eden: { dark: '#020202', gold: '#C5A059' } },
                     animation: { 'fade-in': 'fadeIn 1.2s ease-out forwards' },
                     keyframes: {
                         fadeIn: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
@@ -35,152 +27,150 @@
     </script>
 
     <style>
-        /* --- MASTER-LEVEL AESTHETICS --- */
         body { 
-            background-color: #020202; 
-            color: #e2e8f0; 
-            overflow-x: hidden; 
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            /* 靜態質感噪點 */
+            background-color: #020202; color: #e2e8f0; overflow-x: hidden; 
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
             -webkit-font-smoothing: antialiased;
-            text-rendering: optimizeLegibility;
         }
-
-        .hairline { width: 1px; height: 40px; background: #222; margin: 0 auto 20px auto; }
-
-        .editorial-card {
-            background-color: #050505; border: 1px solid #151515; padding: 40px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative; display: flex; flex-direction: column; justify-content: space-between;
+        .upload-area {
+            border: 1px dashed #333; border-radius: 0; padding: 60px 20px; text-align: center;
+            transition: 0.3s; cursor: pointer; position: relative; overflow: hidden; background: #050505;
         }
-        .editorial-card:hover { border-color: #444; background-color: #080808; transform: translateY(-2px); }
-        .editorial-card.premium:hover { border-color: #C5A059; }
-
-        .meta-tag {
-            font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: #444;
-            text-transform: uppercase; margin-bottom: 15px; display: block; transition: color 0.3s;
+        .upload-area:hover { border-color: #C5A059; background: #080808; }
+        .btn-gold { 
+            background: #C5A059; color: #000; transition: 0.3s; display: block; width: 100%;
+            padding: 15px; text-align: center; font-family: 'Space Mono'; font-size: 12px; letter-spacing: 0.2em; font-weight: bold;
         }
-        .editorial-card:hover .meta-tag { color: #C5A059; }
-
-        .card-title { font-family: 'Cinzel', serif; font-size: 1.6rem; color: #fff; margin-bottom: 10px; font-weight: 400; }
-
-        .card-desc {
-            font-family: 'Shippori Mincho', serif; font-size: 0.9rem; color: #777; font-weight: 400;
-            line-height: 1.8; margin-bottom: 30px; max-width: 90%;
+        .btn-gold:hover { background: #d4b06a; }
+        .swatch-card { cursor: pointer; transition: transform 0.2s; position: relative; }
+        .swatch-card:hover { transform: translateY(-5px); z-index: 10; }
+        .toast { 
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); 
+            background: #C5A059; color: #000; padding: 10px 20px; font-family: 'Space Mono'; 
+            font-size: 10px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 50; 
         }
-
-        .arrow-icon { font-family: 'Space Mono', monospace; font-size: 14px; color: #333; transition: all 0.3s; }
-        .editorial-card:hover .arrow-icon { color: #fff; transform: translateX(5px); }
-
-        .footer-link {
-            position: relative; display: inline-block; color: #666; text-decoration: none; transition: color 0.3s;
-        }
-        .footer-link::after {
-            content: ''; position: absolute; width: 0; height: 1px; bottom: -2px; left: 0; background-color: #C5A059; transition: width 0.3s;
-        }
-        .footer-link:hover { color: #C5A059; }
-        .footer-link:hover::after { width: 100%; }
+        .toast.show { opacity: 1; bottom: 50px; }
     </style>
 </head>
-<body class="pt-24 pb-12 px-6">
+<body class="flex flex-col items-center min-h-screen py-12 px-6">
 
-    <header class="relative z-10 text-center mb-24 animate-fade-in">
-        <div class="hairline"></div>
-        <h1 class="font-serif text-5xl md:text-6xl text-white tracking-[0.25em] mb-4 font-light">EDEN ROOM</h1>
-        <p class="font-mono text-[10px] text-[#444] tracking-[0.6em] uppercase">Digital Archive // Est. 2026</p>
+    <header class="text-center mb-12 animate-fade-in">
+        <h1 class="font-serif text-[#C5A059] text-2xl tracking-[0.2em] mb-2">CHROMA EXTRACTOR</h1>
+        <p class="font-zh text-gray-500 text-xs tracking-widest">影像色彩結構分析</p>
     </header>
 
-    <main class="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in" style="animation-delay: 0.1s;">
+    <main class="w-full max-w-lg space-y-8 animate-fade-in" style="animation-delay: 0.1s;">
 
-        <a href="https://edendphoto1118.github.io/" target="_blank" class="editorial-card premium col-span-1 md:col-span-2 lg:col-span-2 group">
-            <div>
-                <span class="meta-tag">Master Portfolio</span>
-                <h2 class="card-title text-4xl">EDEN ARCHIVE</h2>
-                <div class="w-12 h-[1px] bg-[#333] my-4 group-hover:bg-[#C5A059] transition-colors duration-500"></div>
-                <p class="card-desc text-lg">
-                    光影的收藏室。<br>
-                    瀏覽 EDEN 的攝影作品集，看見那些被凝結的靈魂瞬間。
-                </p>
-            </div>
-            <div class="text-right">
-                <span class="arrow-icon">VIEW COLLECTION ↗</span>
-            </div>
-        </a>
-
-        <a href="https://the-impression-audit.vercel.app/" target="_blank" class="editorial-card premium group">
-            <div>
-                <div class="flex justify-between items-baseline">
-                    <span class="meta-tag">Facade Engineering</span>
-                    <span class="text-[9px] text-[#C5A059] border border-[#C5A059] px-1 pt-[1px] opacity-70">HOT</span>
+        <div id="uploadSection">
+            <input type="file" id="imageInput" accept="image/*" class="hidden">
+            <div class="upload-area" id="dropZone" onclick="document.getElementById('imageInput').click()">
+                <div class="pointer-events-none">
+                    <p class="font-mono text-[10px] text-gray-500 tracking-widest mb-2">JPG / PNG / WEBP</p>
+                    <p class="font-zh text-sm text-gray-300 font-light">點擊或拖曳照片至此<br>開始分析</p>
                 </div>
-                <h2 class="card-title">Impression Audit</h2>
-                <p class="card-desc">
-                    第一印象結構審計。<br>運用視覺工程學計算你的「權威感」與「親和力」，尋找專屬於你的領袖原型。
-                </p>
+                <img id="previewImg" class="absolute top-0 left-0 w-full h-full object-cover opacity-0 transition-opacity duration-500 pointer-events-none">
             </div>
-            <div class="text-right">
-                <span class="arrow-icon">START AUDIT ↗</span>
-            </div>
-        </a>
+        </div>
 
-        <a href="aesthetic.html" class="editorial-card group">
+        <div id="resultSection" class="hidden space-y-8">
             <div>
-                <span class="meta-tag">Aesthetic Ritual</span>
-                <h2 class="card-title">Visual Oracle</h2>
-                <p class="card-desc">
-                    視覺神諭儀式。<br>這不是測驗，而是靈魂的顯化。抽取你的美學原型，領取專屬色票與數位護照。
-                </p>
+                <div class="flex justify-between items-end mb-4">
+                    <h2 class="font-mono text-[#C5A059] text-[10px] tracking-widest">GENERATED PALETTE</h2>
+                    <span class="text-[9px] text-gray-600 font-mono">CLICK TO COPY</span>
+                </div>
+                <div class="grid grid-cols-5 gap-0 border border-[#222] h-28" id="paletteContainer"></div>
             </div>
-            <div class="text-right">
-                <span class="arrow-icon">ENTER ROOM ↗</span>
-            </div>
-        </a>
 
-        <a href="https://eden-material-lab.vercel.app/" target="_blank" class="editorial-card group">
-            <div>
-                <span class="meta-tag">Material Lab</span>
-                <h2 class="card-title">CHROMA</h2>
-                <p class="card-desc">
-                    色彩提取器。<br>上傳照片，AI 自動分析並提取 5 組關鍵色碼 (Hex Code)，解構影像氛圍。
-                </p>
+            <div class="border-l-2 border-[#C5A059] pl-6 py-2">
+                <h3 class="font-mono text-[9px] text-[#C5A059] mb-3 tracking-widest">VIBE DIAGNOSIS</h3>
+                <p id="vibeText" class="font-zh text-sm text-gray-400 leading-relaxed font-light text-justify"></p>
             </div>
-            <div class="text-right">
-                <span class="arrow-icon">OPEN LAB ↗</span>
-            </div>
-        </a>
 
-        <a href="https://vibe-check-ih3e.vercel.app/" target="_blank" class="editorial-card group">
-            <div>
-                <span class="meta-tag">Social App</span>
-                <h2 class="card-title">Vibe Doctor</h2>
-                <p class="card-desc">
-                    氣氛博士。<br>社交場域調節器，生成話題打破尷尬，優化聚會流動。
-                </p>
+            <div class="pt-4 border-t border-[#111]">
+                <a href="https://www.instagram.com/eden_d_photo/" target="_blank" class="btn-gold">
+                    BOOK EDEN FOR THIS VIBE ↗
+                </a>
+                <button onclick="location.reload()" class="block w-full text-center py-4 text-[10px] text-gray-600 hover:text-white transition-colors font-mono tracking-widest">
+                    ANALYZE NEW IMAGE
+                </button>
             </div>
-            <div class="text-right">
-                <span class="arrow-icon">OPEN APP ↗</span>
-            </div>
-        </a>
+        </div>
 
     </main>
 
-    <footer class="relative z-10 mt-32 text-center animate-fade-in" style="animation-delay: 0.2s;">
-        <div class="hairline" style="height: 60px;"></div>
-        
-        <div class="mb-8">
-            <a href="https://www.instagram.com/eden_d_photo/" target="_blank" class="footer-link font-serif text-lg tracking-widest text-[#888]">
-                INSTAGRAM
-            </a>
-        </div>
+    <div id="toast" class="toast">HEX CODE COPIED</div>
+    <canvas id="canvas" class="hidden"></canvas>
 
-        <p class="text-[9px] font-mono text-[#333] tracking-[0.3em] uppercase">
-            &copy; 2026 EDEN ROOM.<br>Taipei City.
-        </p>
-    </footer>
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const input = document.getElementById('imageInput');
+        const preview = document.getElementById('previewImg');
+        const resultSection = document.getElementById('resultSection');
 
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = '#C5A059'; });
+        dropZone.addEventListener('dragleave', () => dropZone.style.borderColor = '#333');
+        dropZone.addEventListener('drop', (e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); });
+        input.addEventListener('change', (e) => handleFile(e.target.files[0]));
+
+        function handleFile(file) {
+            if (!file || !file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                preview.src = e.target.result;
+                preview.classList.remove('opacity-0');
+                preview.style.opacity = '0.3';
+                const img = new Image();
+                img.onload = () => extractColors(img);
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function extractColors(img) {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 200; canvas.height = 200 * (img.height / img.width);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            const colors = {};
+            for (let i = 0; i < imageData.length; i += 4 * 20) {
+                const r = imageData[i], g = imageData[i+1], b = imageData[i+2];
+                if ((r+g+b) < 30 || (r+g+b) > 700) continue;
+                const key = `${Math.round(r/20)*20},${Math.round(g/20)*20},${Math.round(b/20)*20}`;
+                colors[key] = (colors[key] || 0) + 1;
+            }
+            const sortedColors = Object.entries(colors).sort((a, b) => b[1] - a[1]).slice(0, 5).map(entry => entry[0].split(',').map(Number));
+            renderPalette(sortedColors); analyzeVibe(sortedColors);
+            resultSection.classList.remove('hidden');
+        }
+
+        function renderPalette(rgbColors) {
+            const container = document.getElementById('paletteContainer');
+            container.innerHTML = '';
+            rgbColors.forEach(rgb => {
+                const hex = "#" + ((1 << 24) + (rgb[0] << 16) + (rgb[1] << 8) + rgb[2]).toString(16).slice(1).toUpperCase();
+                const div = document.createElement('div');
+                div.className = 'swatch-card h-full group relative';
+                div.style.backgroundColor = hex;
+                div.onclick = () => { navigator.clipboard.writeText(hex); document.getElementById('toast').classList.add('show'); setTimeout(() => document.getElementById('toast').classList.remove('show'), 2000); };
+                div.innerHTML = `<div class="absolute bottom-2 left-0 w-full text-center opacity-0 group-hover:opacity-100 transition-opacity"><span class="bg-black text-white text-[8px] px-1 py-0.5 font-mono">${hex}</span></div>`;
+                container.appendChild(div);
+            });
+        }
+
+        function analyzeVibe(colors) {
+            let totalR=0, totalG=0, totalB=0;
+            colors.forEach(c => { totalR+=c[0]; totalG+=c[1]; totalB+=c[2]; });
+            const avgR = totalR/5, avgG = totalG/5, avgB = totalB/5;
+            const brightness = (avgR+avgG+avgB)/3;
+            let vibe = "這張影像色彩平衡，呈現出「和諧、穩定」的視覺感受。這種中性的色調最為耐看，適合展現經典與雋永的風格。";
+            if (brightness < 80) vibe = "這張影像呈現出「深邃、神秘」的基調。低明度的色彩暗示著強烈的情緒張力與電影般的敘事感，適合用於展現權威或內在探索的主題。";
+            else if (brightness > 180) vibe = "這張影像呈現出「明亮、輕盈」的基調。高明度的色彩傳遞出開放、純淨與呼吸感，適合用於展現自然、療癒或極簡的生活風格。";
+            else if (avgR > avgB && avgR > avgG) vibe = "這張影像以「暖色調」為主導。紅色與黃色的基底傳遞出熱情、懷舊或親密的情感，這是一種充滿溫度與人味的視覺語言。";
+            else if (avgB > avgR) vibe = "這張影像以「冷色調」為主導。藍色與灰色的基底傳遞出理智、冷靜與現代感，這是一種帶有距離美與智性的視覺語言。";
+            document.getElementById('vibeText').innerText = vibe;
+        }
+    </script>
 </body>
 </html>
