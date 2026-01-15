@@ -2,120 +2,191 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THE FACADE REPORT | 結構視角分析</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600;6..96,700&family=Noto+Serif+TC:wght@300;400;600&family=Helvetica+Neue:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDEN ROOM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Space+Mono:ital,wght@0,300;0,400;1,300&family=Shippori+Mincho:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        serif: ['Cinzel', 'serif'], 
+                        mono: ['Space Mono', 'monospace'],
+                        zh: ['Shippori Mincho', 'serif'] 
+                    },
+                    colors: { 
+                        eden: { 
+                            black: '#020202', 
+                            gold: '#C5A059', 
+                            gray: '#1a1a1a', 
+                            text: '#888888'
+                        } 
+                    },
+                    animation: { 'fade-in': 'fadeIn 1.2s ease-out forwards' },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* --- MASTER-LEVEL AESTHETICS --- */
+        body { 
+            background-color: #020202; 
+            color: #e2e8f0; 
+            overflow-x: hidden; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* 靜態質感噪點 */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        .hairline { width: 1px; height: 40px; background: #222; margin: 0 auto 20px auto; }
+
+        .editorial-card {
+            background-color: #050505; border: 1px solid #151515; padding: 40px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative; display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .editorial-card:hover { border-color: #444; background-color: #080808; transform: translateY(-2px); }
+        .editorial-card.premium:hover { border-color: #C5A059; }
+
+        .meta-tag {
+            font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: #444;
+            text-transform: uppercase; margin-bottom: 15px; display: block; transition: color 0.3s;
+        }
+        .editorial-card:hover .meta-tag { color: #C5A059; }
+
+        .card-title { font-family: 'Cinzel', serif; font-size: 1.6rem; color: #fff; margin-bottom: 10px; font-weight: 400; }
+
+        .card-desc {
+            font-family: 'Shippori Mincho', serif; font-size: 0.9rem; color: #777; font-weight: 400;
+            line-height: 1.8; margin-bottom: 30px; max-width: 90%;
+        }
+
+        .arrow-icon { font-family: 'Space Mono', monospace; font-size: 14px; color: #333; transition: all 0.3s; }
+        .editorial-card:hover .arrow-icon { color: #fff; transform: translateX(5px); }
+
+        .footer-link {
+            position: relative; display: inline-block; color: #666; text-decoration: none; transition: color 0.3s;
+        }
+        .footer-link::after {
+            content: ''; position: absolute; width: 0; height: 1px; bottom: -2px; left: 0; background-color: #C5A059; transition: width 0.3s;
+        }
+        .footer-link:hover { color: #C5A059; }
+        .footer-link:hover::after { width: 100%; }
+    </style>
 </head>
-<body>
+<body class="pt-24 pb-12 px-6">
 
-    <div id="lock-screen" class="lock-screen">
-        <div class="lock-content">
-            <div class="masthead">EDEN</div>
-            <p class="issue-no">ISSUE 2026. MATERIAL ADVISORY</p>
-            <h1 class="lock-title">THE FACADE REPORT</h1>
-            
-            <div class="input-group">
-                <input type="text" id="access-code" placeholder="請輸入邀請碼" autocomplete="off">
-                <button id="enter-btn" class="primary-btn">進入解讀</button>
+    <header class="relative z-10 text-center mb-24 animate-fade-in">
+        <div class="hairline"></div>
+        <h1 class="font-serif text-5xl md:text-6xl text-white tracking-[0.25em] mb-4 font-light">EDEN ROOM</h1>
+        <p class="font-mono text-[10px] text-[#444] tracking-[0.6em] uppercase">Digital Archive // Est. 2026</p>
+    </header>
+
+    <main class="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in" style="animation-delay: 0.1s;">
+
+        <a href="https://edendphoto1118.github.io/" target="_blank" class="editorial-card premium col-span-1 md:col-span-2 lg:col-span-2 group">
+            <div>
+                <span class="meta-tag">Master Portfolio</span>
+                <h2 class="card-title text-4xl">EDEN ARCHIVE</h2>
+                <div class="w-12 h-[1px] bg-[#333] my-4 group-hover:bg-[#C5A059] transition-colors duration-500"></div>
+                <p class="card-desc text-lg">
+                    光影的收藏室。<br>
+                    瀏覽 EDEN 的攝影作品集，看見那些被凝結的靈魂瞬間。
+                </p>
             </div>
-            
-            <p id="error-msg" class="error-msg"></p>
-
-            <div class="lock-footer">
-                <span>尚未持有邀請碼？</span>
-                <a href="https://www.instagram.com/eden_d_photo/" target="_blank" class="text-link">私訊 Instagram 獲取</a>
+            <div class="text-right">
+                <span class="arrow-icon">VIEW COLLECTION ↗</span>
             </div>
-        </div>
-    </div>
+        </a>
 
-    <div id="app-container" class="container hidden">
-        <header class="header">
-            <div class="brand">THE FACADE REPORT</div>
-        </header>
-
-        <section id="upload-zone" class="upload-zone">
-            <div class="upload-frame">
-                <input type="file" id="imageInput" accept="image/*">
-                <span class="plus-icon">+</span>
-                <p class="instruction">載入個人肖像</p>
-                <p class="sub-instruction">建議使用臉部置中、光線自然的半身照<br>以獲得最佳視覺效果與分析精準度</p>
-            </div>
-        </section>
-
-        <div id="loader" class="loader hidden">
-            <div class="loading-text-container">
-                <p id="loading-text" class="loading-text">CALCULATING SURFACE GEOMETRY...</p>
-            </div>
-            <div class="loading-bar"><div class="loading-progress"></div></div>
-        </div>
-
-        <section id="result-section" class="result-section hidden">
-            
-            <div class="magazine-cover-wrapper">
-                <div class="magazine-cover" id="capture-area">
-                    
-                    <div class="cover-header">
-                        <span>THE FACADE REPORT</span>
-                        <span>#2026_MQ2</span>
-                    </div>
-                    
-                    <div class="cover-image-container">
-                        <div id="preview-bg" class="image-layer"></div>
-                        <div class="texture-overlay"></div>
-                        
-                        <div class="mask-reveal">
-                            <h2 id="material-type-en" class="cover-title-en">ANALYZING</h2>
-                        </div>
-                        <div class="mask-reveal delay-1">
-                            <h3 id="material-type-zh" class="cover-title-zh">解構中</h3>
-                        </div>
-                    </div>
-                    
-                    <div class="editorial-content">
-                        <div class="analysis-body">
-                            <h4 class="section-title mask-reveal delay-2">解析結果 / ANALYSIS RESULT</h4>
-                            <div class="mask-reveal delay-3">
-                                <p id="analysis-text" class="article-text">...</p>
-                            </div>
-                        </div>
-
-                        <div class="specs-container mask-reveal delay-4">
-                            <div class="spec-col">
-                                <span class="spec-label">建議光源 / LIGHTING</span>
-                                <span id="lighting-req" class="spec-value">...</span>
-                            </div>
-                            <div class="spec-col">
-                                <span class="spec-label">適合材質 / TEXTURE</span>
-                                <span id="texture-rec" class="spec-value">...</span>
-                            </div>
-                        </div>
-                            
-                        <div class="palette-section mask-reveal delay-5">
-                            <span class="spec-label">專屬色號 / PALETTE</span>
-                            <div class="color-chips" id="color-chips"></div>
-                        </div>
-                    </div>
-
-                    <div class="cover-footer">
-                        <div class="signature">Visual Direction by EDEN D.</div>
-                    </div>
+        <a href="https://the-impression-audit.vercel.app/" target="_blank" class="editorial-card premium group">
+            <div>
+                <div class="flex justify-between items-baseline">
+                    <span class="meta-tag">Facade Engineering</span>
+                    <span class="text-[9px] text-[#C5A059] border border-[#C5A059] px-1 pt-[1px] opacity-70">HOT</span>
                 </div>
+                <h2 class="card-title">Impression Audit</h2>
+                <p class="card-desc">
+                    第一印象結構審計。<br>運用視覺工程學計算你的「權威感」與「親和力」，尋找專屬於你的領袖原型。
+                </p>
             </div>
-
-            <div class="action-panel">
-                <p class="cta-guide">分享給好友</p>
-                <button id="download-btn" class="cta-btn">收藏我的專屬期刊 DOWNLOAD</button>
-                <a href="https://www.instagram.com/eden_d_photo/" target="_blank" class="secondary-btn">私訊截圖兌換限定拍攝禮遇 CLAIM PERK</a>
+            <div class="text-right">
+                <span class="arrow-icon">START AUDIT ↗</span>
             </div>
+        </a>
 
-        </section>
-    </div>
+        <a href="aesthetic.html" class="editorial-card group">
+            <div>
+                <span class="meta-tag">Aesthetic Ritual</span>
+                <h2 class="card-title">Visual Oracle</h2>
+                <p class="card-desc">
+                    視覺神諭儀式。<br>這不是測驗，而是靈魂的顯化。抽取你的美學原型，領取專屬色票與數位護照。
+                </p>
+            </div>
+            <div class="text-right">
+                <span class="arrow-icon">ENTER ROOM ↗</span>
+            </div>
+        </a>
 
-    <canvas id="canvas" style="display:none;"></canvas>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="script.js"></script>
+        <div class="editorial-card group relative">
+            <a href="https://eden-material-lab.vercel.app/" target="_blank" class="absolute inset-0 z-10"></a>
+            
+            <a href="https://www.instagram.com/eden_d_photo/" target="_blank" class="absolute top-6 right-6 z-20 text-[9px] text-[#C5A059] border-b border-[#C5A059]/40 hover:text-white hover:border-white transition-colors tracking-widest font-zh cursor-pointer hover:opacity-100 opacity-80">
+                私訊 EDEN 取得邀請碼 ↗
+            </a>
+
+            <div>
+                <span class="meta-tag">Material Lab</span>
+                <h2 class="card-title">CHROMA</h2>
+                <p class="card-desc">
+                    色彩提取器。<br>上傳照片，AI 自動分析並提取 5 組關鍵色碼 (Hex Code)，解構影像氛圍。
+                </p>
+            </div>
+            <div class="text-right">
+                <span class="arrow-icon">OPEN LAB ↗</span>
+            </div>
+        </div>
+
+        <a href="https://vibe-check-ih3e.vercel.app/" target="_blank" class="editorial-card group">
+            <div>
+                <span class="meta-tag">Social App</span>
+                <h2 class="card-title">Vibe Doctor</h2>
+                <p class="card-desc">
+                    氣氛博士。<br>社交場域調節器，生成話題打破尷尬，優化聚會流動。
+                </p>
+            </div>
+            <div class="text-right">
+                <span class="arrow-icon">OPEN APP ↗</span>
+            </div>
+        </a>
+
+    </main>
+
+    <footer class="relative z-10 mt-32 text-center animate-fade-in" style="animation-delay: 0.2s;">
+        <div class="hairline" style="height: 60px;"></div>
+        
+        <div class="mb-8">
+            <a href="https://www.instagram.com/eden_d_photo/" target="_blank" class="footer-link font-serif text-lg tracking-widest text-[#888]">
+                INSTAGRAM
+            </a>
+        </div>
+
+        <p class="text-[9px] font-mono text-[#333] tracking-[0.3em] uppercase">
+            &copy; 2026 EDEN ROOM.<br>Taipei City.
+        </p>
+    </footer>
+
 </body>
 </html>
