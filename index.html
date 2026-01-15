@@ -2,175 +2,120 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHROMA | EDEN LAB</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Shippori+Mincho:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { 
-                        serif: ['Cinzel', 'serif'], 
-                        mono: ['Space Mono', 'monospace'],
-                        zh: ['Shippori Mincho', 'serif'] 
-                    },
-                    colors: { eden: { dark: '#020202', gold: '#C5A059' } },
-                    animation: { 'fade-in': 'fadeIn 1.2s ease-out forwards' },
-                    keyframes: {
-                        fadeIn: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        body { 
-            background-color: #020202; color: #e2e8f0; overflow-x: hidden; 
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
-            -webkit-font-smoothing: antialiased;
-        }
-        .upload-area {
-            border: 1px dashed #333; border-radius: 0; padding: 60px 20px; text-align: center;
-            transition: 0.3s; cursor: pointer; position: relative; overflow: hidden; background: #050505;
-        }
-        .upload-area:hover { border-color: #C5A059; background: #080808; }
-        .btn-gold { 
-            background: #C5A059; color: #000; transition: 0.3s; display: block; width: 100%;
-            padding: 15px; text-align: center; font-family: 'Space Mono'; font-size: 12px; letter-spacing: 0.2em; font-weight: bold;
-        }
-        .btn-gold:hover { background: #d4b06a; }
-        .swatch-card { cursor: pointer; transition: transform 0.2s; position: relative; }
-        .swatch-card:hover { transform: translateY(-5px); z-index: 10; }
-        .toast { 
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); 
-            background: #C5A059; color: #000; padding: 10px 20px; font-family: 'Space Mono'; 
-            font-size: 10px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 50; 
-        }
-        .toast.show { opacity: 1; bottom: 50px; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>THE FACADE REPORT | 結構視角分析</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600;6..96,700&family=Noto+Serif+TC:wght@300;400;600&family=Helvetica+Neue:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="flex flex-col items-center min-h-screen py-12 px-6">
+<body>
 
-    <header class="text-center mb-12 animate-fade-in">
-        <h1 class="font-serif text-[#C5A059] text-2xl tracking-[0.2em] mb-2">CHROMA EXTRACTOR</h1>
-        <p class="font-zh text-gray-500 text-xs tracking-widest">影像色彩結構分析</p>
-    </header>
-
-    <main class="w-full max-w-lg space-y-8 animate-fade-in" style="animation-delay: 0.1s;">
-
-        <div id="uploadSection">
-            <input type="file" id="imageInput" accept="image/*" class="hidden">
-            <div class="upload-area" id="dropZone" onclick="document.getElementById('imageInput').click()">
-                <div class="pointer-events-none">
-                    <p class="font-mono text-[10px] text-gray-500 tracking-widest mb-2">JPG / PNG / WEBP</p>
-                    <p class="font-zh text-sm text-gray-300 font-light">點擊或拖曳照片至此<br>開始分析</p>
-                </div>
-                <img id="previewImg" class="absolute top-0 left-0 w-full h-full object-cover opacity-0 transition-opacity duration-500 pointer-events-none">
-            </div>
-        </div>
-
-        <div id="resultSection" class="hidden space-y-8">
-            <div>
-                <div class="flex justify-between items-end mb-4">
-                    <h2 class="font-mono text-[#C5A059] text-[10px] tracking-widest">GENERATED PALETTE</h2>
-                    <span class="text-[9px] text-gray-600 font-mono">CLICK TO COPY</span>
-                </div>
-                <div class="grid grid-cols-5 gap-0 border border-[#222] h-28" id="paletteContainer"></div>
-            </div>
-
-            <div class="border-l-2 border-[#C5A059] pl-6 py-2">
-                <h3 class="font-mono text-[9px] text-[#C5A059] mb-3 tracking-widest">VIBE DIAGNOSIS</h3>
-                <p id="vibeText" class="font-zh text-sm text-gray-400 leading-relaxed font-light text-justify"></p>
-            </div>
-
-            <div class="pt-4 border-t border-[#111]">
-                <a href="https://www.instagram.com/eden_d_photo/" target="_blank" class="btn-gold">
-                    BOOK EDEN FOR THIS VIBE ↗
-                </a>
-                <button onclick="location.reload()" class="block w-full text-center py-4 text-[10px] text-gray-600 hover:text-white transition-colors font-mono tracking-widest">
-                    ANALYZE NEW IMAGE
-                </button>
-            </div>
-        </div>
-
-    </main>
-
-    <div id="toast" class="toast">HEX CODE COPIED</div>
-    <canvas id="canvas" class="hidden"></canvas>
-
-    <script>
-        const dropZone = document.getElementById('dropZone');
-        const input = document.getElementById('imageInput');
-        const preview = document.getElementById('previewImg');
-        const resultSection = document.getElementById('resultSection');
-
-        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = '#C5A059'; });
-        dropZone.addEventListener('dragleave', () => dropZone.style.borderColor = '#333');
-        dropZone.addEventListener('drop', (e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); });
-        input.addEventListener('change', (e) => handleFile(e.target.files[0]));
-
-        function handleFile(file) {
-            if (!file || !file.type.startsWith('image/')) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                preview.src = e.target.result;
-                preview.classList.remove('opacity-0');
-                preview.style.opacity = '0.3';
-                const img = new Image();
-                img.onload = () => extractColors(img);
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function extractColors(img) {
-            const canvas = document.getElementById('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = 200; canvas.height = 200 * (img.height / img.width);
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    <div id="lock-screen" class="lock-screen">
+        <div class="lock-content">
+            <div class="masthead">EDEN</div>
+            <p class="issue-no">ISSUE 2026. MATERIAL ADVISORY</p>
+            <h1 class="lock-title">THE FACADE REPORT</h1>
             
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-            const colors = {};
-            for (let i = 0; i < imageData.length; i += 4 * 20) {
-                const r = imageData[i], g = imageData[i+1], b = imageData[i+2];
-                if ((r+g+b) < 30 || (r+g+b) > 700) continue;
-                const key = `${Math.round(r/20)*20},${Math.round(g/20)*20},${Math.round(b/20)*20}`;
-                colors[key] = (colors[key] || 0) + 1;
-            }
-            const sortedColors = Object.entries(colors).sort((a, b) => b[1] - a[1]).slice(0, 5).map(entry => entry[0].split(',').map(Number));
-            renderPalette(sortedColors); analyzeVibe(sortedColors);
-            resultSection.classList.remove('hidden');
-        }
+            <div class="input-group">
+                <input type="text" id="access-code" placeholder="請輸入邀請碼" autocomplete="off">
+                <button id="enter-btn" class="primary-btn">進入解讀</button>
+            </div>
+            
+            <p id="error-msg" class="error-msg"></p>
 
-        function renderPalette(rgbColors) {
-            const container = document.getElementById('paletteContainer');
-            container.innerHTML = '';
-            rgbColors.forEach(rgb => {
-                const hex = "#" + ((1 << 24) + (rgb[0] << 16) + (rgb[1] << 8) + rgb[2]).toString(16).slice(1).toUpperCase();
-                const div = document.createElement('div');
-                div.className = 'swatch-card h-full group relative';
-                div.style.backgroundColor = hex;
-                div.onclick = () => { navigator.clipboard.writeText(hex); document.getElementById('toast').classList.add('show'); setTimeout(() => document.getElementById('toast').classList.remove('show'), 2000); };
-                div.innerHTML = `<div class="absolute bottom-2 left-0 w-full text-center opacity-0 group-hover:opacity-100 transition-opacity"><span class="bg-black text-white text-[8px] px-1 py-0.5 font-mono">${hex}</span></div>`;
-                container.appendChild(div);
-            });
-        }
+            <div class="lock-footer">
+                <span>尚未持有邀請碼？</span>
+                <a href="https://www.instagram.com/eden_d_photo/" target="_blank" class="text-link">私訊 Instagram 獲取</a>
+            </div>
+        </div>
+    </div>
 
-        function analyzeVibe(colors) {
-            let totalR=0, totalG=0, totalB=0;
-            colors.forEach(c => { totalR+=c[0]; totalG+=c[1]; totalB+=c[2]; });
-            const avgR = totalR/5, avgG = totalG/5, avgB = totalB/5;
-            const brightness = (avgR+avgG+avgB)/3;
-            let vibe = "這張影像色彩平衡，呈現出「和諧、穩定」的視覺感受。這種中性的色調最為耐看，適合展現經典與雋永的風格。";
-            if (brightness < 80) vibe = "這張影像呈現出「深邃、神秘」的基調。低明度的色彩暗示著強烈的情緒張力與電影般的敘事感，適合用於展現權威或內在探索的主題。";
-            else if (brightness > 180) vibe = "這張影像呈現出「明亮、輕盈」的基調。高明度的色彩傳遞出開放、純淨與呼吸感，適合用於展現自然、療癒或極簡的生活風格。";
-            else if (avgR > avgB && avgR > avgG) vibe = "這張影像以「暖色調」為主導。紅色與黃色的基底傳遞出熱情、懷舊或親密的情感，這是一種充滿溫度與人味的視覺語言。";
-            else if (avgB > avgR) vibe = "這張影像以「冷色調」為主導。藍色與灰色的基底傳遞出理智、冷靜與現代感，這是一種帶有距離美與智性的視覺語言。";
-            document.getElementById('vibeText').innerText = vibe;
-        }
-    </script>
+    <div id="app-container" class="container hidden">
+        <header class="header">
+            <div class="brand">THE FACADE REPORT</div>
+        </header>
+
+        <section id="upload-zone" class="upload-zone">
+            <div class="upload-frame">
+                <input type="file" id="imageInput" accept="image/*">
+                <span class="plus-icon">+</span>
+                <p class="instruction">載入個人肖像</p>
+                <p class="sub-instruction">建議使用臉部置中、光線自然的半身照<br>以獲得最佳視覺效果與分析精準度</p>
+            </div>
+        </section>
+
+        <div id="loader" class="loader hidden">
+            <div class="loading-text-container">
+                <p id="loading-text" class="loading-text">CALCULATING SURFACE GEOMETRY...</p>
+            </div>
+            <div class="loading-bar"><div class="loading-progress"></div></div>
+        </div>
+
+        <section id="result-section" class="result-section hidden">
+            
+            <div class="magazine-cover-wrapper">
+                <div class="magazine-cover" id="capture-area">
+                    
+                    <div class="cover-header">
+                        <span>THE FACADE REPORT</span>
+                        <span>#2026_MQ2</span>
+                    </div>
+                    
+                    <div class="cover-image-container">
+                        <div id="preview-bg" class="image-layer"></div>
+                        <div class="texture-overlay"></div>
+                        
+                        <div class="mask-reveal">
+                            <h2 id="material-type-en" class="cover-title-en">ANALYZING</h2>
+                        </div>
+                        <div class="mask-reveal delay-1">
+                            <h3 id="material-type-zh" class="cover-title-zh">解構中</h3>
+                        </div>
+                    </div>
+                    
+                    <div class="editorial-content">
+                        <div class="analysis-body">
+                            <h4 class="section-title mask-reveal delay-2">解析結果 / ANALYSIS RESULT</h4>
+                            <div class="mask-reveal delay-3">
+                                <p id="analysis-text" class="article-text">...</p>
+                            </div>
+                        </div>
+
+                        <div class="specs-container mask-reveal delay-4">
+                            <div class="spec-col">
+                                <span class="spec-label">建議光源 / LIGHTING</span>
+                                <span id="lighting-req" class="spec-value">...</span>
+                            </div>
+                            <div class="spec-col">
+                                <span class="spec-label">適合材質 / TEXTURE</span>
+                                <span id="texture-rec" class="spec-value">...</span>
+                            </div>
+                        </div>
+                            
+                        <div class="palette-section mask-reveal delay-5">
+                            <span class="spec-label">專屬色號 / PALETTE</span>
+                            <div class="color-chips" id="color-chips"></div>
+                        </div>
+                    </div>
+
+                    <div class="cover-footer">
+                        <div class="signature">Visual Direction by EDEN D.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-panel">
+                <p class="cta-guide">分享給好友</p>
+                <button id="download-btn" class="cta-btn">收藏我的專屬期刊 DOWNLOAD</button>
+                <a href="https://www.instagram.com/eden_d_photo/" target="_blank" class="secondary-btn">私訊截圖兌換限定拍攝禮遇 CLAIM PERK</a>
+            </div>
+
+        </section>
+    </div>
+
+    <canvas id="canvas" style="display:none;"></canvas>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
